@@ -154,8 +154,11 @@
     const active = modules.length ? currentModuleIndex() : -1;
     if (active !== lastActive) {
       lastActive = active;
-      tocLinks.forEach((a, i) => a.classList.toggle('active', i === active));
-      if (tocLinks[active]) tocLinks[active].setAttribute('aria-current', 'true');
+      tocLinks.forEach((a, i) => {
+        a.classList.toggle('active', i === active);
+        if (i === active) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
       if (topbarModule && modules[active]) topbarModule.textContent = modules[active]._title;
     }
     legacyDots.forEach((d, i) => {

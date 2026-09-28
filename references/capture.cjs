@@ -16,7 +16,7 @@
  *   "outDir":   "course-name/screenshots",
  *   "viewport": { "width": 1280, "height": 800 },              // optional
  *   "scale":    2,                                             // optional deviceScaleFactor (url mode)
- *   "initScript": "stubs.js",                                  // optional: runs before page scripts (mock window.go / preload APIs)
+ *   "initScript": "stubs.js",                                  // optional: runs before app scripts in every document (mock window.go / preload APIs)
  *   "shots": [
  *     {
  *       "name": "01-main-window",
@@ -100,14 +100,18 @@ async function main() {
       cwd: appDir,
       env: Object.assign({}, process.env, cfg.target.env || {})
     });
+    // Register stubs on the context so they run before any app script in every new document.
+    if (initScript) await app.context().addInitScript({ content: initScript });
     page = await app.firstWindow();
+    // The first window may have started loading before the script was registered;
+    // reload once so its document also gets the stubs before the renderer boots.
+    if (initScript) await page.reload();
     await page.waitForLoadState('domcontentloaded');
     // Resize the real BrowserWindow so screenshots have a predictable size.
     await app.evaluate(({ BrowserWindow }, vp) => {
       const w = BrowserWindow.getAllWindows()[0];
       if (w) w.setContentSize(vp.width, vp.height);
     }, viewport).catch(() => {});
-    if (initScript) await page.evaluate(initScript);
     closer = () => app.close();
   } else if (cfg.target && cfg.target.url) {
     const browser = await pw.chromium.launch();
@@ -130,15 +134,19 @@ async function main() {
       const file = path.join(outDir, shot.name + '.png');
 
       // Frame = the area the PNG shows; hotspot percentages are relative to it.
+      // Screenshot first, then measure the frame and every hotspot in that same
+      // (post-scroll) state so all boxes share one coordinate system.
       let frame;
       if (shot.clip) {
         const loc = page.locator(shot.clip).first();
-        frame = await loc.boundingBox();
+        await loc.scrollIntoViewIfNeeded();
         await loc.screenshot({ path: file });
+        frame = await loc.boundingBox();
+        if (!frame) throw new Error('clip element "' + shot.clip + '" is not visible');
       } else {
+        await page.screenshot({ path: file });
         const size = await page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight }));
         frame = { x: 0, y: 0, width: size.width, height: size.height };
-        await page.screenshot({ path: file });
       }
 
       const spots = [];
@@ -146,6 +154,10 @@ async function main() {
         const box = await page.locator(h.selector).first().boundingBox({ timeout: 3000 }).catch(() => null);
         if (!box) { spots.push(Object.assign({}, h, { error: 'selector not found or not visible' })); continue; }
         const rx = box.x - frame.x, ry = box.y - frame.y;
+        if (rx + box.width <= 0 || ry + box.height <= 0 || rx >= frame.width || ry >= frame.height) {
+          spots.push(Object.assign({}, h, { error: 'element is outside the captured area' }));
+          continue;
+        }
         // Marker sits on the element's top-right corner so it never hides the label.
         const mx = Math.min(frame.width - 6, rx + box.width), my = Math.max(6, ry);
         spots.push({
