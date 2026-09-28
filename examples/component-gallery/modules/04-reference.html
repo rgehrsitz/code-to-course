@@ -1,0 +1,120 @@
+<section class="module" id="module-4">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">04</span><span class="module-meta">reference</span>
+      <h1 class="module-title">Every feature, plus the developer kit</h1>
+      <p class="module-subtitle">A searchable feature map, then the elements used by library-mode courses.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Feature map</h2>
+      <div class="feature-map wide-block">
+        <div class="feature-map-controls">
+          <input class="feature-search" type="search" placeholder="Search features…" aria-label="Search features">
+          <button class="feature-filter" data-filter="all">All</button>
+          <button class="feature-filter" data-filter="write">Writing</button>
+          <button class="feature-filter" data-filter="organize">Organizing</button>
+          <button class="feature-filter" data-filter="share">Sharing</button>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-item" data-category="write"><span class="feature-name">Live preview</span><span class="feature-how"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd> <kbd>E</kbd></span></div>
+          <div class="feature-item" data-category="write" data-tags="table grid"><span class="feature-name">Insert table</span><span class="feature-how"><span class="menu-path"><span>Insert</span><span>Table</span></span></span></div>
+          <div class="feature-item" data-category="write" data-tags="focus zen"><span class="feature-name">Focus mode</span><span class="feature-how"><span class="menu-path"><span>View</span><span>Focus Mode</span></span></span></div>
+          <div class="feature-item" data-category="organize"><span class="feature-name">Tags</span><span class="feature-how">Type <code>#tag</code> in any note — <a href="#module-1">Module 1</a></span></div>
+          <div class="feature-item" data-category="organize" data-tags="pin star"><span class="feature-name">Favorites</span><span class="feature-how">Right-click a note › Add to Favorites</span></div>
+          <div class="feature-item" data-category="organize"><span class="feature-name">Move to notebook</span><span class="feature-how"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd> <kbd data-mac="⇧" data-win="Shift">Shift</kbd> <kbd>M</kbd></span></div>
+          <div class="feature-item" data-category="share" data-tags="pdf print"><span class="feature-name">Export as PDF</span><span class="feature-how"><span class="menu-path"><span>File</span><span>Export</span><span>PDF…</span></span></span></div>
+          <div class="feature-item" data-category="share" data-tags="html web"><span class="feature-name">Export as HTML</span><span class="feature-how"><span class="menu-path"><span>File</span><span>Export</span><span>HTML…</span></span></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Library mode: code ↔ English</h2>
+      <div class="translation-block">
+        <div class="translation-code">
+          <span class="translation-label">Code</span><span class="translation-file">examples/export.ts</span>
+          <pre><code><span class="code-line"><span class="code-keyword">const</span> doc = <span class="code-keyword">await</span> driftwood.<span class="code-function">open</span>(<span class="code-string">"notes/trip.md"</span>);</span>
+<span class="code-line hl"><span class="code-keyword">const</span> pdf = <span class="code-keyword">await</span> doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>, { <span class="code-property">theme</span>: <span class="code-string">"paper"</span> });</span>
+<span class="code-line"><span class="code-keyword">await</span> fs.<span class="code-function">writeFile</span>(<span class="code-string">"trip.pdf"</span>, pdf);</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">Plain English</span>
+          <div class="translation-lines">
+            <p class="tl">Load a note from disk and wait until it's ready.</p>
+            <p class="tl">Render it to PDF using the "paper" theme — the same one the app uses.</p>
+            <p class="tl">Save the resulting bytes as a file.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="api-card">
+        <div class="api-signature"><span class="api-kind">method</span>doc.export(format: "pdf" | "html", options?: ExportOptions): Promise&lt;Uint8Array&gt;</div>
+        <div class="api-body">
+          <p class="api-summary">Renders the document in the requested format. Throws <code>ExportError</code> if the note contains an image that can't be read.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>format</td><td>Output type. Only these two values are accepted.</td></tr>
+              <tr><td>options.theme<span class="optional">optional</span></td><td>Theme name. Defaults to <code>"paper"</code>.</td></tr>
+            </tbody>
+          </table>
+          <p class="api-returns"><strong>Returns</strong>The file contents as bytes.</p>
+        </div>
+      </div>
+
+      <div class="compare">
+        <div class="compare-col dont"><div class="compare-label">Don't</div>
+          <div class="code-block"><pre><code>doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>);  <span class="code-comment">// forgot await</span></code></pre></div>
+          <p>You get a Promise, not the bytes — the file will be empty.</p></div>
+        <div class="compare-col do"><div class="compare-label">Do</div>
+          <div class="code-block"><pre><code><span class="code-keyword">await</span> doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>);</code></pre></div>
+          <p>Wait for the render to finish before using the result.</p></div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-file">src/config/defaults.ts</span><span class="code-lang">ts</span></div>
+        <pre><code><span class="code-keyword">export const</span> <span class="code-property">AUTOSAVE_MS</span> = <span class="code-number">800</span>;
+<span class="code-keyword">export const</span> <span class="code-property">MAX_ATTACHMENT_MB</span> = <span class="code-number">25</span>;</code></pre>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Other building blocks</h2>
+      <div class="arch-diagram">
+        <div class="arch-zone"><div class="arch-zone-label">Inside the app window</div>
+          <div class="arch-component" data-desc="Renders everything you see — built with web technology inside Electron."><div class="arch-icon">🖼</div><span>Interface</span></div>
+          <div class="arch-component" data-desc="Watches the library folder and reloads notes changed by other apps."><div class="arch-icon">👀</div><span>File watcher</span></div>
+        </div>
+        <div class="arch-zone"><div class="arch-zone-label">On your computer</div>
+          <div class="arch-component" data-desc="Plain .md files — the only copy of your notes."><div class="arch-icon">📁</div><span>Library folder</span></div>
+        </div>
+        <div class="arch-description">Click any component to learn what it does.</div>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="flow-step-num">1</div><p>Type</p></div><div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">2</div><p>Pause 0.8s</p></div><div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">3</div><p>Saved to disk</p></div>
+      </div>
+      <div class="icon-rows">
+        <div class="icon-row"><div class="icon-circle">🍎</div><div><strong>macOS 12+</strong><p>Apple silicon and Intel</p></div></div>
+        <div class="icon-row"><div class="icon-circle">🪟</div><div><strong>Windows 10+</strong><p>Installer or portable .zip</p></div></div>
+      </div>
+      <div class="file-tree">
+        <div class="ft-folder"><span class="ft-name">Driftwood/</span><span class="ft-desc">Your library</span>
+          <div class="ft-children">
+            <div class="ft-folder"><span class="ft-name">Travel 2026/</span><span class="ft-desc">A notebook is just a folder</span></div>
+            <div class="ft-file"><span class="ft-name">Book ideas.md</span><span class="ft-desc">A note is just a file</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="badge-list">
+        <div class="badge-item"><code class="badge-code">--safe-mode</code><span class="badge-desc">Starts without plugins — use when the app crashes on launch</span></div>
+      </div>
+      <div class="callout callout-caution"><div class="callout-icon">⚠️</div><div class="callout-content"><strong class="callout-title">Heads up</strong><p>Emptying the Trash is permanent — the files are deleted from disk.</p></div></div>
+      <div class="callout callout-tip"><div class="callout-icon">✅</div><div class="callout-content"><strong class="callout-title">Pro tip</strong><p>Pin your most-used notebook with a right-click.</p></div></div>
+    </section>
+  </div>
+</section>
