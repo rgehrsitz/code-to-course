@@ -86,6 +86,8 @@ Same as B.4: start the frontend dev server, point `target.url` at it, stub any n
 - After capture, **look at every image** (Read it) before using it. Re-capture anything with spinners, toasts, hover artifacts or half-loaded content (add `wait`/`waitFor` steps).
 
 ### Using the output
+The script exits non-zero if any shot or hotspot failed; each failure is listed in the console and marked with an `error` in `hotspots.json`. Fix the selector or add a `waitFor` step and re-run before using the output.
+
 `screenshots/hotspots.json` contains, per shot, a ready-made `html` string for each hotspot:
 ```html
 <button class="hotspot" style="--x:9%;--y:0.8%" data-title="New Note" data-desc="Creates a blank note…" data-region="1%,0.8%,8%,3.9%"></button>

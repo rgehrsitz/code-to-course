@@ -387,14 +387,15 @@
     target.dataset.placed = chip.dataset.answer;
     target.classList.remove('correct-placed', 'incorrect-placed');
     chip.classList.add('placed');
-    chip.classList.remove('picked');
+    $$('.dnd-chip.picked', container).forEach(c => c.classList.remove('picked'));
+    container._picked = null;
     container.classList.remove('has-pick');
   }
 
   function initDnD(container) {
     const chips = $$('.dnd-chip', container);
     const targets = $$('.dnd-zone-target', container);
-    let picked = null;
+    container._picked = null; // selected chip for tap-to-place; lives on the container so resetDnD can clear it
     targets.forEach(t => { t.dataset.emptyText = t.textContent.trim() || 'Drop here'; t.tabIndex = 0; });
 
     chips.forEach(chip => {
@@ -407,9 +408,9 @@
       });
       chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
       const pick = () => {
-        if (picked === chip) { chip.classList.remove('picked'); picked = null; container.classList.remove('has-pick'); return; }
+        if (container._picked === chip) { chip.classList.remove('picked'); container._picked = null; container.classList.remove('has-pick'); return; }
         chips.forEach(c => c.classList.remove('picked'));
-        picked = chip;
+        container._picked = chip;
         chip.classList.add('picked');
         container.classList.add('has-pick');
       };
@@ -426,7 +427,7 @@
         const chip = $('.dnd-chip[data-answer="' + e.dataTransfer.getData('text/plain') + '"]', container);
         if (chip) placeChip(container, target, chip);
       });
-      const drop = () => { if (picked) { placeChip(container, target, picked); picked = null; } };
+      const drop = () => { if (container._picked) { placeChip(container, target, container._picked); container._picked = null; } };
       target.addEventListener('click', drop);
       target.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop(); } });
     });
@@ -456,6 +457,7 @@
       t.classList.remove('correct-placed', 'incorrect-placed');
     });
     $$('.dnd-chip', container).forEach(c => c.classList.remove('placed', 'dragging', 'picked'));
+    container._picked = null;
     container.classList.remove('has-pick');
   };
 

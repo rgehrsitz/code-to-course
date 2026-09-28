@@ -45,12 +45,16 @@
 const fs = require('fs');
 const path = require('path');
 
-function loadPlaywright() {
+// Resolve Playwright from the app / config / working directories first (where the
+// user installed it), then from this script's location and NODE_PATH.
+function loadPlaywright(searchDirs) {
   for (const mod of ['playwright', '@playwright/test', 'playwright-core']) {
+    try { return require(require.resolve(mod, { paths: searchDirs })); } catch (e) { /* try next */ }
     try { return require(mod); } catch (e) { /* try next */ }
   }
-  console.error('Playwright not found. Install it in the app repo (npm i -D playwright) ' +
-    'or run with NODE_PATH="$(npm root -g)" if it is installed globally.');
+  console.error('Playwright not found. Install it in the app repo (npm i -D playwright), or in the ' +
+    'directory you run this from, or set NODE_PATH="$(npm root -g)" if it is installed globally.\n' +
+    'Searched: ' + searchDirs.join(', '));
   process.exit(1);
 }
 
@@ -83,7 +87,9 @@ async function main() {
   const viewport = cfg.viewport || { width: 1280, height: 800 };
   const initScript = cfg.initScript ? fs.readFileSync(path.resolve(baseDir, cfg.initScript), 'utf8') : null;
 
-  const pw = loadPlaywright();
+  const searchDirs = [process.cwd(), baseDir];
+  if (cfg.target && cfg.target.electron) searchDirs.unshift(path.resolve(baseDir, cfg.target.electron));
+  const pw = loadPlaywright(searchDirs);
   let page, closer;
 
   if (cfg.target && cfg.target.electron) {
@@ -126,6 +132,7 @@ async function main() {
   }
 
   const report = {};
+  let failures = 0;
   for (const shot of cfg.shots || []) {
     process.stdout.write('• ' + shot.name + ' … ');
     try {
@@ -172,8 +179,16 @@ async function main() {
         });
       }
       report[shot.name] = { file: path.relative(baseDir, file), size: frame, hotspots: spots };
-      console.log('ok' + (spots.length ? ' (' + spots.length + ' hotspots)' : ''));
+      const bad = spots.filter(sp => sp.error);
+      if (bad.length) {
+        failures++;
+        console.log('ok, but ' + bad.length + ' of ' + spots.length + ' hotspots FAILED: ' +
+          bad.map(sp => '"' + (sp.title || sp.selector) + '" (' + sp.error + ')').join('; '));
+      } else {
+        console.log('ok' + (spots.length ? ' (' + spots.length + ' hotspots)' : ''));
+      }
     } catch (e) {
+      failures++;
       report[shot.name] = { error: String(e && e.message || e) };
       console.log('FAILED — ' + (e && e.message || e));
     }
@@ -182,6 +197,10 @@ async function main() {
   fs.writeFileSync(path.join(outDir, 'hotspots.json'), JSON.stringify(report, null, 2));
   console.log('Wrote ' + path.join(outDir, 'hotspots.json'));
   await closer();
+  if (failures) {
+    console.error(failures + ' shot(s) had failures — see hotspots.json.');
+    process.exitCode = 1;
+  }
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
