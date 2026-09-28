@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * PROJECT-TO-COURSE — SCREENSHOT CAPTURE
+ * CODE-TO-COURSE — SCREENSHOT CAPTURE
  *
  * Drives a running app with Playwright, takes screenshots for the course,
  * and computes UI-tour hotspot coordinates (as % of the image) from real

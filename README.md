@@ -1,4 +1,4 @@
-# Project to Course
+# Code to Course
 
 A Claude Code skill that turns a project repository into a beautiful, interactive HTML course **for the people who use it**.
 
@@ -15,10 +15,10 @@ Because the code is the most accurate manual that exists. It knows the exact men
 
 ## Quick start
 
-**1. Install** — clone into your Claude Code skills folder. The folder name should match the skill name, `project-to-course`:
+**1. Install** — clone into your Claude Code skills folder (the folder, repo and skill are all named `code-to-course`):
 
 ```bash
-git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/project-to-course
+git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/code-to-course
 ```
 
 **2. Use** — open any project in Claude Code and ask:
@@ -30,9 +30,9 @@ git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/project-t
 
 Claude picks the mode from the project (or you can name it), analyzes the code, captures screenshots when it can run the app, and writes the course to a new folder. Open its `index.html` in any browser.
 
-**3. Update** — `git -C ~/.claude/skills/project-to-course pull`
+**3. Update** — `git -C ~/.claude/skills/code-to-course pull`
 
-> **Tip:** if you also have the original `codebase-to-course` skill installed, both respond to phrases like "make a course". Say *"use project-to-course"* to pick this one, or uninstall the other.
+> **Tip:** if you also have the original, similarly named `codebase-to-course` skill installed, both respond to phrases like "make a course". Say *"use code-to-course"* to pick this one, or uninstall the other.
 
 ### Requirements
 
@@ -66,9 +66,12 @@ The output is a small **directory** (`index.html` + CSS/JS + screenshots) that o
 [`examples/component-gallery/`](examples/component-gallery/) is a sample course for a fictional notes app that uses every element. GitHub shows HTML as source, so open it locally:
 
 ```bash
-open ~/.claude/skills/project-to-course/examples/component-gallery/index.html      # macOS
-xdg-open ~/.claude/skills/project-to-course/examples/component-gallery/index.html  # Linux
-start %USERPROFILE%\.claude\skills\project-to-course\examples\component-gallery\index.html  # Windows
+open ~/.claude/skills/code-to-course/examples/component-gallery/index.html      # macOS
+xdg-open ~/.claude/skills/code-to-course/examples/component-gallery/index.html  # Linux
+```
+
+```powershell
+Start-Process "$HOME\.claude\skills\code-to-course\examples\component-gallery\index.html"  # Windows (PowerShell)
 ```
 
 ## Screenshots for desktop apps
@@ -87,7 +90,7 @@ The capture script also computes hotspot positions from real element positions, 
 You can also run the capture script yourself — describe the shots in a JSON file, then:
 
 ```bash
-node ~/.claude/skills/project-to-course/references/capture.cjs shots.json
+node ~/.claude/skills/code-to-course/references/capture.cjs shots.json
 ```
 
 It writes the PNGs plus `hotspots.json` (ready-to-paste hotspot markup), and exits non-zero if any shot or hotspot failed. The file format is documented at the top of `capture.cjs`.
@@ -103,7 +106,7 @@ It writes the PNGs plus `hotspots.json` (ready-to-paste hotspot markup), and exi
 ## Customizing
 
 - **Accent color** — each course sets one color in its `_base.html`; every other shade is derived from it, in light and dark mode.
-- **Design system** — edit `references/styles.css` and `references/main.js`, then run `bash preview.sh` in `examples/component-gallery/` to see the result. New courses pick up the changes automatically.
+- **Design system** — edit `references/styles.css` and `references/main.js`, then run `bash preview.sh` in `examples/component-gallery/` (on Windows: `powershell -NoProfile -ExecutionPolicy Bypass -File preview.ps1`) to see the result. New courses pick up the changes automatically.
 - **Teaching style** — the audience files (`references/audience-*.md`) and `references/content-philosophy.md` control what each mode extracts and how it teaches.
 
 ## Skill structure
@@ -123,7 +126,7 @@ references/
 ├── module-brief-template.md     # Briefs for parallel module writing
 ├── styles.css · main.js         # Pre-built design system + engines (copied verbatim)
 └── _base.html · _footer.html · build.sh · build.ps1
-examples/component-gallery/      # Sample course showing every element (bash preview.sh to rebuild)
+examples/component-gallery/      # Sample course showing every element (preview.sh / preview.ps1 to rebuild)
 docs/                            # README preview images
 ```
 

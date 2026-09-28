@@ -1,5 +1,5 @@
 /**
- * PROJECT-TO-COURSE — COMPLETE JS ENGINE
+ * CODE-TO-COURSE — COMPLETE JS ENGINE
  * Copy this file verbatim into the course output directory.
  * Never regenerate it. Every engine auto-initializes by scanning for
  * class names and data-* attributes (see interactive-elements.md).

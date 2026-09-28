@@ -1,9 +1,9 @@
 ---
-name: project-to-course
+name: code-to-course
 description: "Turn any project repository into a beautiful, interactive HTML course for the people who USE it. For desktop/web applications (Electron, Wails, Tauri, web apps, CLIs) it builds an end-user course on how to use and get the most out of every feature; for libraries, SDKs and frameworks it builds a developer-onboarding course on how to use the public API well. It can also teach a codebase's internals when explicitly asked. Trigger on: 'turn this into a course', 'make a course for my users', 'user training for this app', 'teach people how to use this', 'onboarding course', 'tutorial for this library', 'interactive guide to this project', 'explain this codebase interactively', 'codebase walkthrough', 'make a course from this project'. Produces a self-contained course directory (index.html + assets) with a sidebar table of contents, dark mode, screenshot tours with hotspots, platform-aware keyboard shortcuts, quizzes, animations and a searchable feature map."
 ---
 
-# Project-to-Course
+# Code-to-Course
 
 Transform a project repository into a stunning, interactive course. The output is a **directory** containing a pre-built `styles.css`, `main.js`, per-module HTML files, optional screenshots, and an assembled `index.html` that opens directly in a browser (only external dependency: Google Fonts).
 
