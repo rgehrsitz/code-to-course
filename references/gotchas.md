@@ -1,32 +1,54 @@
 # Gotchas — Common Failure Points
 
-> **When to read this:** During Phase 3 (writing module HTML) and Phase 4 (review). Check every one of these before considering a course complete.
+> **When to read this:** Phase 3 (writing modules) and Phase 4 (review). Check every item before calling a course done.
 
-These are real problems encountered when building courses. Check every one before considering a course complete.
+### Invented or paraphrased UI
+Writing "Settings" when the app says "Preferences…", inventing a shortcut, or teaching a feature that's behind a disabled flag. **Fix:** every label, shortcut, setting and message is copied from the code; grep for it before using it.
 
-### Tooltip Clipping
-Translation blocks use `overflow: hidden` for code wrapping. If tooltips use `position: absolute` inside the term element, they get clipped by the container. **Fix:** Tooltips must use `position: fixed` and be appended to `document.body`. Calculate position from `getBoundingClientRect()`. This is already handled by `main.js` but is the #1 bug that appears in every build.
+### Wrong audience voice
+An end-user course that mentions components, IPC, stores or handlers; a library course that explains what a function is. **Fix:** reread the audience file's "Who the learner is" and "Tooltips" sections, then scan each module for words that belong to another mode.
 
-### Not Enough Tooltips
-The most common failure is under-tooltipping. Non-technical learners don't know terms like REPL, JSON, flag, entry point, PATH, pip, namespace, function, class, module, PR, E2E, or even software names like Blender/GIMP. **Rule of thumb:** if a term wouldn't appear in everyday conversation with a non-technical friend, tooltip it. Err heavily on the side of too many. BUT: don't tooltip terms the user already knows well from their domain (e.g., AI/ML concepts for someone in AI).
+### A manual instead of a course
+Walking through every menu in order. **Fix:** modules are organized around the learner's jobs; exhaustive coverage goes in the feature map.
 
-### Walls of Text
-The course looks like a textbook instead of an infographic. This happens when you write more than 2-3 sentences in a row without a visual break. Every screen must be at least 50% visual. Convert any list of 3+ items into cards, any sequence into step cards or flow diagrams, any code explanation into a code↔English translation block.
+### Stale or broken screenshots
+Images showing old UI, spinners, toasts, empty states, real personal data, or hotspots covering the label they describe. **Fix:** look at every image before using it; re-capture with `wait`/`waitFor` steps and sample data; place markers at a control's corner. Mark HTML mock-ups with `is-illustration`.
 
-### Recycled Metaphors
-Using "restaurant" or "kitchen" for everything. Every module needs its own metaphor that feels inevitable for that specific concept. If you catch yourself reaching for the same metaphor twice, stop and find one that fits the concept organically.
+### Missing alt text
+Every `<img>` needs `alt` describing what's on screen.
 
-### Code Modifications
-Trimming, simplifying, or "cleaning up" code snippets from the codebase. The learner should be able to open the real file and see the exact same code. Instead of editing code to be shorter, *choose* naturally short snippets (5-10 lines) from the codebase that illustrate the point.
+### Hard-coded platform keys
+Writing "Ctrl+K" in prose. **Fix:** always `<kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>K</kbd>` inside `.keys`.
 
-### Quiz Questions That Test Memory
-Asking "What does API stand for?" or "Which file handles X?" — those test recall, not understanding. Every quiz question should present a new scenario the learner hasn't seen and ask them to *apply* what they learned.
+### Apostrophes in `data-steps`
+The flow animation's `data-steps` attribute is single-quoted, so an apostrophe in a label ends the attribute, `JSON.parse` fails and the animation is dead (a console warning says so). **Fix:** use `&apos;` or rephrase.
 
-### Scroll-Snap Mandatory
-Using `scroll-snap-type: y mandatory` traps users inside long modules. Always use `proximity`.
+### Hard-coded colors
+Hex values in inline styles look wrong in dark mode. **Fix:** tokens only (`var(--color-actor-3)`).
 
-### Module Quality Degradation
-Trying to write all modules in one pass causes later modules to be thin and rushed. Build one module at a time and verify each before moving on. For complex codebases, use the parallel path with module briefs.
+### Not enough (or too many) tooltips
+Internals courses under-tooltip; library courses over-tooltip. Calibrate to the mode (see content-philosophy).
 
-### Missing Interactive Elements
-A module with only text and code blocks, no interactivity. Every module needs at least one of: quiz, data flow animation, group chat, architecture diagram, drag-and-drop. These aren't decorations — they're how non-technical learners actually process information.
+### Walls of text
+More than 2–3 sentences in a row, or a screen that's mostly paragraphs. **Fix:** convert to cards, steps, action↔result blocks, screenshots.
+
+### Recycled metaphors
+"Restaurant" or "kitchen" more than once — or at all. Each concept gets its own metaphor.
+
+### Modified code snippets
+Trimming or "cleaning up" code. **Fix:** choose a naturally short snippet and copy it exactly.
+
+### Quiz questions that test memory
+"What's the shortcut for X?" / "Which menu is Y in?" **Fix:** every question is a new scenario that requires applying what was learned.
+
+### Module quality degradation
+Later modules thinner than early ones. **Fix:** write one module at a time and review each; use the parallel path with briefs for big projects.
+
+### Missing interactive elements
+A module with only text and code. Every module needs at least one interactive element and one hero visual; check the mode's required-elements list across the whole course.
+
+### Writing shell pieces by hand
+Adding nav dots, a table of contents, "next module" links, `<style>` or `<script>` to modules. **Fix:** the shell is generated by `main.js`; modules contain markup only.
+
+### Final check
+Open the built `index.html`, check the console for errors, and view at least one module in light **and** dark mode and at a narrow (phone) width.

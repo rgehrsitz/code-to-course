@@ -1,0 +1,81 @@
+<section class="module" id="module-1">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">01</span><span class="module-meta">6 min</span>
+      <h1 class="module-title">Meet Driftwood</h1>
+      <p class="module-subtitle">What the app is for, and a guided tour of the main window.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Your notes, as plain files you own</h2>
+      <p class="lead">Driftwood stores every note as a <span class="term" data-definition="A simple text format where # makes a heading and * makes a bullet. Any text editor can open it, so your notes never get locked into one app.">Markdown</span> file in a folder on your computer. The app is a fast, friendly window onto that folder.</p>
+      <div class="pattern-cards stagger-children">
+        <div class="pattern-card animate-in"><div class="pattern-icon">📓</div><h4 class="pattern-title">Notebooks</h4><p class="pattern-desc">Folders for grouping notes — like drawers in a filing cabinet.</p></div>
+        <div class="pattern-card animate-in"><div class="pattern-icon">🏷</div><h4 class="pattern-title">Tags</h4><p class="pattern-desc">Labels that cut across notebooks. One note can wear many.</p></div>
+        <div class="pattern-card animate-in"><div class="pattern-icon">🔎</div><h4 class="pattern-title">Quick search</h4><p class="pattern-desc">Find any note by a word in it, in under a second.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">A tour of the main window</h2>
+      <div class="ui-tour wide-block" data-title="The main window" data-intro="Six areas do all the work. Click a marker or press Start.">
+        <div class="app-window">
+          <div class="app-window-bar"><span class="app-window-title">Driftwood — All Notes</span></div>
+          <div class="app-window-body">
+            <img src="screenshots/main-window.png" alt="Driftwood main window with sidebar, note list and editor">
+            <button class="hotspot" style="--x:9.6%;--y:1.6%" data-title="New Note" data-desc="Creates a blank note in the notebook you have selected. Shortcut: <span class='keys'><kbd data-mac='⌘' data-win='Ctrl'>Ctrl</kbd><kbd>N</kbd></span>" data-region="1%,0.5%,8%,4.2%"></button>
+            <button class="hotspot" style="--x:98.6%;--y:1.6%" data-title="Quick search" data-desc="Searches the text of every note, not just titles." data-region="77%,0.8%,22%,3.8%"></button>
+            <button class="hotspot" style="--x:17%;--y:30%" data-title="Sidebar" data-desc="Switch between your library, notebooks and tags." data-region="0%,5.5%,18.3%,90.5%"></button>
+            <button class="hotspot" style="--x:40%;--y:9%" data-title="Note list" data-desc="Notes in the current view, newest first. The orange bar marks the open note." data-region="18.3%,5.5%,23.4%,90.5%"></button>
+            <button class="hotspot" style="--x:70%;--y:30%" data-title="Editor" data-desc="Type here. Changes save automatically within a second." data-region="41.7%,5.5%,58.3%,90.5%"></button>
+            <button class="hotspot" style="--x:16%;--y:96.6%" data-title="Save status" data-desc="Green means everything is written to disk. Amber means a save is waiting." data-region="0%,96.3%,16%,3.7%"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">What happens when you click New Note</h2>
+      <div class="action-result">
+        <div class="action-col">
+          <div class="action-col-label">You do</div>
+          <ol class="action-steps">
+            <li>Select the <strong>Travel 2026</strong> notebook</li>
+            <li>Click <span class="menu-path"><span>File</span><span>New Note</span></span></li>
+            <li>Type a title and press <kbd>Enter</kbd></li>
+          </ol>
+        </div>
+        <div class="action-col">
+          <div class="action-col-label">What happens</div>
+          <ol class="action-steps">
+            <li>The notebook becomes the destination folder</li>
+            <li>A file named <code>untitled.md</code> appears in it</li>
+            <li>The file is renamed to match your title</li>
+          </ol>
+        </div>
+      </div>
+      <div class="callout callout-accent">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong class="callout-title">Why this matters</strong><p>Because notes are real files, you can back them up, sync them or open them in another editor — Driftwood never holds them hostage.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="quiz-container" id="quiz-1">
+        <div class="quiz-question-block" data-correct="b"
+             data-explanation-right="Notes are plain files in a folder, so any sync tool that syncs folders will work."
+             data-explanation-wrong="Driftwood has no account system — the notes are ordinary files in a folder you choose.">
+          <h3 class="quiz-question">You want your notes on a second laptop. What's the simplest route?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="a"><div class="quiz-option-radio"></div><span>Export every note as PDF and email them</span></button>
+            <button class="quiz-option" data-value="b"><div class="quiz-option-radio"></div><span>Put the Driftwood folder inside a synced folder (Dropbox, iCloud…)</span></button>
+            <button class="quiz-option" data-value="c"><div class="quiz-option-radio"></div><span>Sign in to a Driftwood account on both machines</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+        <button class="quiz-check-btn">Check answer</button>
+        <button class="quiz-reset-btn">Try again</button>
+      </div>
+    </section>
+  </div>
+</section>

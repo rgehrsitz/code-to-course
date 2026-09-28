@@ -1,49 +1,64 @@
 # Module Brief Template
 
-> **When to read this:** During Phase 2.5 (planning checkpoint) for complex codebases. Fill in one brief per module, save to `course-name/briefs/0N-slug.md`. Each brief gives a parallel agent everything it needs to write one module without reading the codebase or SKILL.md.
+> **When to read this:** Phase 2.5 (complex projects). Fill in one brief per module and save it to `course-name/briefs/0N-slug.md`. A brief gives a writing agent everything it needs to write one module **without reading the repository or SKILL.md** — so pre-extract every exact string, snippet and screenshot it will use.
 
 ---
 
 ## Module N: [Title]
 
-### Teaching Arc
-- **Metaphor:** [A fresh, specific metaphor — never "restaurant." See `references/content-philosophy.md` > Metaphors First]
-- **Opening hook:** [1 sentence that connects to something the learner already knows from using the app]
-- **Key insight:** [The one thing the learner should walk away understanding]
-- **"Why should I care?":** [How this helps them steer AI / debug / make decisions]
+### Course context
+- **Mode:** end-user / library / internals
+- **Audience in one line:** [e.g. "Office staff using Driftwood daily; no technical background"]
+- **Accent & actor colors:** [e.g. accent vermillion; Sidebar = actor-2 teal, Editor = actor-3 plum]
 
-### Code Snippets (pre-extracted)
+### Teaching arc
+- **Metaphor:** [fresh and specific — never "restaurant"]
+- **Opening hook:** [one sentence from the learner's world / something they already do]
+- **Key insight:** [the one thing they should walk away with]
+- **Why should I care?:** [what they can do better after this module]
 
-Include the actual code the module will use in code↔English translation blocks. Copy-paste from the codebase with file path and line numbers. The writing agent will use these verbatim — it will NOT re-read the codebase.
+### Source material (pre-extracted, copy exactly)
 
-File: src/example/file.ts (lines 12-24)
-[paste actual code here]
+**Exact UI strings / API names** (end-user & library):
+- Menu paths: `File › Export › PDF…` (from src/main/menu.ts:42)
+- Shortcuts: New note = `CmdOrCtrl+N` → `<kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>N</kbd>`
+- Settings: `Autosave delay` — default `800` ms (src/config/defaults.ts:3)
+- Error messages: `Could not save "%s": %s` (src/main/save.ts:88) → example: `Could not save "Trip packing list": EACCES permission denied`
+- Signatures: `doc.export(format, options?) → Promise<Uint8Array>` (src/document.ts:120)
 
-File: src/another/file.ts (lines 45-52)
-[paste actual code here]
+**Screenshots** (end-user):
+- `screenshots/01-main-window.png` — alt: "…" — hotspots (from hotspots.json):
+  `<button class="hotspot" style="--x:9%;--y:1.6%" data-title="New Note" data-desc="…" data-region="…"></button>`
+- Mark any mock-up as an illustration.
 
-### Interactive Elements
+**Code snippets** (library / internals, and config files users edit):
 
-Check which elements this module needs. Include enough detail for the writing agent to build them.
+File: examples/export.ts (lines 12–18)
+```
+[paste exact code]
+```
 
-- [ ] **Code↔English translation** — which snippet(s) from above
-- [ ] **Quiz** — [number] questions, style: [scenario / debugging / architecture / tracing]. Brief description of each question's angle.
-- [ ] **Group chat animation** — actors: [list]. Message flow summary: [who says what to whom, in what order]
-- [ ] **Data flow animation** — actors: [list]. Steps: [sequence of highlights and packet movements]
-- [ ] **Drag-and-drop** — items: [list], targets: [list]
-- [ ] **Other** — [architecture diagram, layer toggle, pattern cards, etc.]
+### Elements to build
+Tick what this module needs, with enough detail to build it.
+- [ ] **Hero visual:** [UI tour / flow animation / diagram — details]
+- [ ] **Action ↔ result** — steps: …
+- [ ] **Code ↔ English** — which snippet
+- [ ] **Quiz** — N questions; angle of each: …
+- [ ] **Group chat** — actors (+ colors); message sequence: …
+- [ ] **Flow animation** — actors; steps: …
+- [ ] **Shortcut list / setting cards / error cards** — items: …
+- [ ] **Try-it checklist** — id + items
+- [ ] **Feature map** — categories; items with how-to-reach + module links
+- [ ] **Other** — [pattern cards, do/don't, API card, drag-and-drop…]
+- [ ] **Glossary terms** to define on first use: …
 
-### Reference Files to Read
-
-List only the sections the writing agent needs — not the whole file.
-
-- `references/interactive-elements.md` → [section names, e.g., "Multiple-Choice Quizzes", "Group Chat Animation"]
-- `references/design-system.md` → [only if needed for specific tokens not in the brief]
-- `references/content-philosophy.md` → [always include — agent needs content rules]
-- `references/gotchas.md` → [always include — agent needs the checklist]
+### Reference sections the writer needs
+- `references/interactive-elements.md` → [section names only, e.g. "UI Tour", "Keys & Shortcuts", "Multiple-Choice Quiz"]
+- `references/content-philosophy.md` → always
+- `references/gotchas.md` → always
+- `references/audience-<mode>.md` → "Who the learner is" and "Quizzes" sections
 
 ### Connections
-
-- **Previous module:** [Title — what it covered, so this module can build on it]
-- **Next module:** [Title — what it will cover, so this module can set it up]
-- **Tone/style notes:** [Any course-wide consistency notes: accent color name, actor naming convention, etc.]
+- **Previous module:** [title — what it covered]
+- **Next module:** [title — what it will cover] (the "Up next" card is automatic; this is for narrative transitions)
+- **Terminology to keep consistent:** [e.g. always "notebook", never "folder", in prose]

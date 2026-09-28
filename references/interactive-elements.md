@@ -1,945 +1,604 @@
 # Interactive Elements Reference
 
-Implementation patterns for every interactive element type used in courses. Pick the elements that best serve each module's teaching goal.
+HTML patterns for every element a course can use. **Read only the sections you need.**
 
-> **Architecture note:** All CSS and JavaScript for these elements live in `references/styles.css` and `references/main.js`, which are copied verbatim into every course directory. When writing module HTML files, use only the HTML patterns below — do **not** inline `<style>` or `<script>` tags for these elements. The engines in `main.js` auto-initialize on page load by scanning for the relevant class names and `data-*` attributes described here.
+> **Wiring:** all CSS and JS live in `styles.css` and `main.js`, copied verbatim into every course. Modules contain markup only — never `<style>` or `<script>`. Every engine auto-initializes by scanning for the class names and `data-*` attributes shown here; buttons are bound automatically (inline `onclick` also still works). Colors come from tokens (`var(--color-actor-2)`), never hex values.
+
+Tags: **[all]** any mode · **[user]** end-user mode · **[lib]** library mode · **[int]** internals mode
 
 ## Table of Contents
-1. [Code ↔ English Translation Blocks](#code--english-translation-blocks)
-2. [Multiple-Choice Quizzes](#multiple-choice-quizzes)
-3. [Drag-and-Drop Matching](#drag-and-drop-matching)
-4. [Group Chat Animation](#group-chat-animation)
-5. [Message Flow / Data Flow Animation](#message-flow--data-flow-animation)
-6. [Interactive Architecture Diagram](#interactive-architecture-diagram)
-7. [Layer Toggle Demo](#layer-toggle-demo)
-8. ["Spot the Bug" Challenge](#spot-the-bug-challenge)
-9. [Scenario Quiz](#scenario-quiz)
-10. [Callout Boxes](#callout-boxes)
-11. [Pattern/Feature Cards](#patternfeature-cards)
-12. [Flow Diagrams](#flow-diagrams)
-13. [Permission/Config Badges](#permissionconfig-badges)
-14. [Glossary Tooltips](#glossary-tooltips)
-15. [Visual File Tree](#visual-file-tree)
-16. [Icon-Label Rows](#icon-label-rows)
-17. [Numbered Step Cards](#numbered-step-cards)
+**Structure:** Module Skeleton · Course Hero · Wide Blocks
+**Teaching:** Code Blocks & Terminal · Code ↔ English Translation · Action ↔ Result · Callouts · Pattern Cards · Numbered Step Cards · Flow Steps · Icon Rows · File Tree · Badge List · Glossary Tooltips · Tabs
+**Interactive:** Multiple-Choice Quiz · Scenario Quiz · Drag-and-Drop · Group Chat · Flow Animation · Architecture / UI Map · Spot the Bug / Mistake · Layer Toggle
+**End-user:** Keys & Shortcuts · Menu Paths · App Window · UI Tour · Setting Cards · Error Cards · Try-It Checklist · Feature Map
+**Library:** API Card · Do / Don't Comparison
 
 ---
 
-## Code ↔ English Translation Blocks
+## Module Skeleton  [all]
 
-The most important teaching element. Shows real code from the project on the left and a plain English translation on the right, line by line.
+```html
+<section class="module" id="module-2">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">02</span><span class="module-meta">7 min</span>
+      <h1 class="module-title">From idea to exported PDF</h1>
+      <p class="module-subtitle">The core workflow, end to end.</p>
+    </header>
 
-**HTML:**
+    <section class="screen animate-in">
+      <h2 class="screen-heading">One idea per screen</h2>
+      <p class="lead">Optional larger intro sentence.</p>
+      <!-- elements -->
+    </section>
+  </div>
+</section>
+```
+- `id` is `module-N` in file order. The sidebar, top-bar title, progress and the "Up next" card at the end of each module are generated from `.module-title` — don't write them.
+- `.module-meta` is optional (reading time, or "reference").
+- `.screen-subheading` (h3) is available for a second level.
+- Add `animate-in` to screens/headers for scroll reveal; wrap card grids in `stagger-children` to cascade them.
+
+## Course Hero  [all]
+
+Put in `modules/00-cover.html` (outside any `.module`, so it isn't in the table of contents).
+```html
+<header class="course-hero" id="top">
+  <div class="course-hero-inner">
+    <span class="hero-eyebrow">Interactive course</span>
+    <h1 class="hero-title">Get more out of <em>Driftwood</em></h1>
+    <p class="hero-subtitle">One sentence promise: what the learner can do after this course.</p>
+    <div class="hero-meta">
+      <span class="hero-chip">⏱ 25 minutes</span>
+      <span class="hero-chip">🧭 5 modules</span>
+      <span class="hero-chip">🖥 v2.4 · macOS / Windows / Linux</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="#module-1">Start the course →</a>
+    </div>
+    <!-- optional: <div class="hero-visual"><div class="app-window">…</div></div> -->
+  </div>
+</header>
+```
+`<em>` in the title renders in the accent color. Library courses: use an install chip, e.g. `<span class="hero-chip"><code>npm i driftwood</code></span>`.
+
+## Wide Blocks  [all]
+
+Content is 760px wide. Add `wide-block` to a screenshot, tour, feature map or diagram to let it break out to 1040px:
+```html
+<div class="ui-tour wide-block">…</div>
+```
+
+---
+
+## Code Blocks & Terminal  [all]
+
+Standalone code with a file header. A copy button is added automatically.
+```html
+<div class="code-block">
+  <div class="code-header"><span class="code-file">src/config/defaults.ts</span><span class="code-lang">ts</span></div>
+  <pre><code><span class="code-keyword">export const</span> <span class="code-property">AUTOSAVE_MS</span> = <span class="code-number">800</span>;</code></pre>
+</div>
+```
+Terminal — `.prompt` and `.output` spans are excluded from what gets copied:
+```html
+<div class="terminal">
+  <div class="code-header">Terminal</div>
+  <pre><span class="prompt">$ </span>driftwood open "Trip packing list"
+<span class="output">Opened in existing window.</span></pre>
+</div>
+```
+Syntax classes: `code-keyword`, `code-string`, `code-function`, `code-comment`, `code-number`, `code-property`, `code-operator`, `code-type`, `code-tag`, `code-attr`, `code-value`. Wrap lines in `<span class="code-line">`; add `hl` to highlight one (`<span class="code-line hl">`). Escape `<`, `>` and `&` in code. Add `data-no-copy` to suppress the copy button. Code wraps — there is never a horizontal scrollbar.
+
+Inline code in prose: `<code>untitled.md</code>` (styled as a chip).
+
+## Code ↔ English Translation  [int] [lib] (end-user: only for things users type)
+
+Real code on the left, plain-English line-by-line on the right.
 ```html
 <div class="translation-block animate-in">
   <div class="translation-code">
-    <span class="translation-label">CODE</span>
-    <pre><code>
-<span class="code-line"><span class="code-keyword">const</span> response = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(url, {</span>
-<span class="code-line">  <span class="code-property">method</span>: <span class="code-string">'POST'</span>,</span>
-<span class="code-line">  <span class="code-property">headers</span>: { <span class="code-string">'Authorization'</span>: apiKey }</span>
-<span class="code-line">});</span>
-    </code></pre>
+    <span class="translation-label">Code</span>
+    <span class="translation-file">examples/export.ts</span>
+    <pre><code><span class="code-line"><span class="code-keyword">const</span> doc = <span class="code-keyword">await</span> driftwood.<span class="code-function">open</span>(<span class="code-string">"notes/trip.md"</span>);</span>
+<span class="code-line hl"><span class="code-keyword">const</span> pdf = <span class="code-keyword">await</span> doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>);</span></code></pre>
   </div>
   <div class="translation-english">
-    <span class="translation-label">PLAIN ENGLISH</span>
+    <span class="translation-label">Plain English</span>
     <div class="translation-lines">
-      <p class="tl">Send a request to the URL and wait for a response...</p>
-      <p class="tl">We're sending data (POST), not just asking for it (GET)...</p>
-      <p class="tl">Include our API key so the server knows who we are...</p>
-      <p class="tl">End of the request setup.</p>
+      <p class="tl">Load a note from disk and wait until it's ready.</p>
+      <p class="tl">Render it to PDF — the same renderer the app uses.</p>
     </div>
   </div>
 </div>
 ```
+- One English line per 1–2 code lines. Explain the *why*, not just the *what*.
+- `translation-file` is optional (shows the source path).
 
-**CSS:**
-```css
-.translation-block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  margin: var(--space-8) 0;
-}
-.translation-code {
-  background: var(--color-bg-code);
-  color: #CDD6F4;
-  padding: var(--space-6);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: 1.7;
-  position: relative;
-  overflow-x: hidden;  /* NO horizontal scrollbar — ever */
-}
-.translation-code pre,
-.translation-code code {
-  white-space: pre-wrap;       /* wrap long lines instead of scrolling */
-  word-break: break-word;      /* break mid-word if needed */
-  overflow-x: hidden;
-}
-.translation-english {
-  background: var(--color-surface-warm);
-  padding: var(--space-6);
-  font-size: var(--text-sm);
-  line-height: 1.7;
-  border-left: 3px solid var(--color-accent);
-}
-.translation-label {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-3);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  opacity: 0.5;
-}
-.translation-english .translation-label {
-  color: var(--color-text-muted);
-}
-/* Responsive: stack vertically on mobile */
-@media (max-width: 768px) {
-  .translation-block { grid-template-columns: 1fr; }
-  .translation-english { border-left: none; border-top: 3px solid var(--color-accent); }
-}
-```
+## Action ↔ Result  [user]
 
-**Rules:**
-- Each English line should correspond to 1-2 code lines
-- Use conversational language, not technical jargon
-- Highlight the "why" not just the "what" — e.g., "Include our API key so the server knows who we are" not "Set the Authorization header"
-
----
-
-## Multiple-Choice Quizzes
-
-For testing understanding with instant feedback. Each question has options, one correct answer, and per-question explanations.
-
-**Wiring:** `main.js` exposes `window.selectOption(btn)`, `window.checkQuiz(containerId)`, and `window.resetQuiz(containerId)`. Call them via `onclick`. Per-question explanations go in `data-explanation-right` and `data-explanation-wrong` on the `.quiz-question-block`.
-
-**HTML:**
+The end-user equivalent of a translation block: what you do, and what happens.
 ```html
-<div class="quiz-container" id="quiz-module3">
-  <div class="quiz-question-block"
-       data-correct="option-b"
-       data-explanation-right="Exactly — because X is responsible for Y in this architecture."
-       data-explanation-wrong="Not quite. Think about where Y lives in the codebase...">
-    <h3 class="quiz-question">Question text here?</h3>
-    <div class="quiz-options">
-      <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
-        <div class="quiz-option-radio"></div>
-        <span>Answer A</span>
-      </button>
-      <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
-        <div class="quiz-option-radio"></div>
-        <span>Answer B (correct)</span>
-      </button>
-      <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
-        <div class="quiz-option-radio"></div>
-        <span>Answer C</span>
-      </button>
-    </div>
-    <div class="quiz-feedback"></div>
+<div class="action-result animate-in">
+  <div class="action-col">
+    <div class="action-col-label">You do</div>
+    <ol class="action-steps">
+      <li>Select the <strong>Travel</strong> notebook</li>
+      <li>Choose <span class="menu-path"><span>File</span><span>New Note</span></span></li>
+    </ol>
   </div>
-
-  <button class="quiz-check-btn" onclick="checkQuiz('quiz-module3')">Check Answers</button>
-  <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module3')">Try Again</button>
-</div>
-```
-
-**CSS for quiz states:**
-```css
-.quiz-option {
-  display: flex; align-items: center; gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  cursor: pointer; width: 100%;
-  transition: border-color var(--duration-fast), background var(--duration-fast);
-}
-.quiz-option:hover { border-color: var(--color-accent-muted); }
-.quiz-option.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
-.quiz-option.correct { border-color: var(--color-success); background: var(--color-success-light); }
-.quiz-option.incorrect { border-color: var(--color-error); background: var(--color-error-light); }
-.quiz-option-radio {
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 2px solid var(--color-border);
-  transition: all var(--duration-fast);
-}
-.quiz-option.selected .quiz-option-radio {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  box-shadow: inset 0 0 0 3px white;
-}
-.quiz-feedback {
-  max-height: 0; overflow: hidden; opacity: 0;
-  transition: max-height var(--duration-normal), opacity var(--duration-normal);
-}
-.quiz-feedback.show { max-height: 200px; opacity: 1; padding: var(--space-3); margin-top: var(--space-2); border-radius: var(--radius-sm); }
-.quiz-feedback.success { background: var(--color-success-light); color: var(--color-success); }
-.quiz-feedback.error { background: var(--color-error-light); color: var(--color-error); }
-```
-
----
-
-## Drag-and-Drop Matching
-
-For matching concepts to descriptions. Supports both mouse (HTML5 Drag API) and touch.
-
-**HTML:**
-```html
-<div class="dnd-container">
-  <div class="dnd-chips">
-    <div class="dnd-chip" draggable="true" data-answer="actor-a">Actor A</div>
-    <div class="dnd-chip" draggable="true" data-answer="actor-b">Actor B</div>
-    <div class="dnd-chip" draggable="true" data-answer="actor-c">Actor C</div>
-  </div>
-  <div class="dnd-zones">
-    <div class="dnd-zone" data-correct="actor-a">
-      <p class="dnd-zone-label">Description for Actor A</p>
-      <div class="dnd-zone-target">Drop here</div>
-    </div>
-    <!-- more zones -->
-  </div>
-  <button onclick="checkDnD()">Check Matches</button>
-  <button onclick="resetDnD()">Reset</button>
-</div>
-```
-
-**JS (mouse + touch):**
-```javascript
-// MOUSE: HTML5 Drag API
-chips.forEach(chip => {
-  chip.addEventListener('dragstart', (e) => {
-    e.dataTransfer.setData('text/plain', chip.dataset.answer);
-    chip.classList.add('dragging');
-  });
-  chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
-});
-
-zones.forEach(zone => {
-  const target = zone.querySelector('.dnd-zone-target');
-  target.addEventListener('dragover', (e) => { e.preventDefault(); target.classList.add('drag-over'); });
-  target.addEventListener('dragleave', () => target.classList.remove('drag-over'));
-  target.addEventListener('drop', (e) => {
-    e.preventDefault();
-    target.classList.remove('drag-over');
-    const answer = e.dataTransfer.getData('text/plain');
-    const chip = document.querySelector(`[data-answer="${answer}"]`);
-    target.textContent = chip.textContent;
-    target.dataset.placed = answer;
-    chip.classList.add('placed');
-  });
-});
-
-// TOUCH: Custom implementation (HTML5 drag doesn't work on mobile)
-chips.forEach(chip => {
-  chip.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const clone = chip.cloneNode(true);
-    clone.classList.add('touch-ghost');
-    clone.style.cssText = `position:fixed; z-index:1000; pointer-events:none;
-      left:${touch.clientX - 40}px; top:${touch.clientY - 20}px;`;
-    document.body.appendChild(clone);
-    chip._ghost = clone;
-    chip._answer = chip.dataset.answer;
-  }, { passive: false });
-
-  chip.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    if (chip._ghost) {
-      chip._ghost.style.left = (touch.clientX - 40) + 'px';
-      chip._ghost.style.top = (touch.clientY - 20) + 'px';
-    }
-    // Highlight zone under finger
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    zones.forEach(z => z.querySelector('.dnd-zone-target').classList.remove('drag-over'));
-    if (el && el.closest('.dnd-zone-target')) {
-      el.closest('.dnd-zone-target').classList.add('drag-over');
-    }
-  }, { passive: false });
-
-  chip.addEventListener('touchend', (e) => {
-    if (chip._ghost) { chip._ghost.remove(); chip._ghost = null; }
-    const touch = e.changedTouches[0];
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (el && el.closest('.dnd-zone-target')) {
-      const target = el.closest('.dnd-zone-target');
-      target.textContent = chip.textContent;
-      target.dataset.placed = chip._answer;
-      chip.classList.add('placed');
-    }
-  });
-});
-```
-
----
-
-## Group Chat Animation
-
-iMessage/WeChat-style chat showing components "talking" to each other. Messages appear one by one with typing indicators.
-
-**Wiring:** `main.js` auto-initializes every `.chat-window` on page load. Give each chat window a unique `id`. Control buttons need these classes: `.chat-next-btn`, `.chat-all-btn`, `.chat-reset-btn`. The typing indicator avatar element should have `id="{chatWindowId}-typing-avatar"` or simply be the first `.chat-avatar` inside `.chat-typing`.
-
-**HTML:**
-```html
-<div class="chat-window" id="chat-module2">
-  <div class="chat-messages">
-    <div class="chat-message" data-msg="0" data-sender="actor-a" style="display:none">
-      <div class="chat-avatar" style="background: var(--color-actor-1)">A</div>
-      <div class="chat-bubble">
-        <span class="chat-sender" style="color: var(--color-actor-1)">Actor A</span>
-        <p>Hey Background, I need the data for this item.</p>
-      </div>
-    </div>
-    <!-- more messages... -->
-  </div>
-
-  <div class="chat-typing" id="chat-typing" style="display:none">
-    <div class="chat-avatar" id="typing-avatar">?</div>
-    <div class="chat-typing-dots">
-      <span class="typing-dot"></span>
-      <span class="typing-dot"></span>
-      <span class="typing-dot"></span>
-    </div>
-  </div>
-
-  <div class="chat-controls">
-    <button class="btn chat-next-btn">Next Message</button>
-    <button class="btn chat-all-btn">Play All</button>
-    <button class="btn chat-reset-btn">Replay</button>
-    <span class="chat-progress"></span>
+  <div class="action-col">
+    <div class="action-col-label">What happens</div>
+    <ol class="action-steps">
+      <li>The notebook becomes the destination folder</li>
+      <li>A new file appears in it, named after your title</li>
+    </ol>
   </div>
 </div>
 ```
+Labels can be changed ("You type" / "You see"). Rows should correspond one-to-one.
 
-**CSS for typing dots:**
-```css
-.typing-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--color-text-muted);
-  animation: typingBounce 1.4s infinite;
-}
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typingBounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
-}
-```
+## Callouts  [all]
 
----
-
-## Message Flow / Data Flow Animation
-
-Step-by-step visualization of data moving between components. User clicks "Next Step" to advance.
-
-**Wiring:** `main.js` auto-initializes every `.flow-animation` on page load. Pass steps as JSON in `data-steps`. Each step object: `{ highlight: "flow-actor-id", label: "description", packet: true, from: "actor-id-suffix", to: "actor-id-suffix" }`. Actor element IDs must be `flow-actor-1`, `flow-actor-2`, etc. Control buttons need classes `.flow-next-btn` and `.flow-reset-btn`.
-
-> **⚠️ Single quotes in step labels will break parsing.** The `data-steps` attribute is delimited by single quotes (`data-steps='[...]'`), so any single quote inside a label (e.g. `"the user's request"`) will terminate the attribute early and cause `JSON.parse` to fail silently — the entire animation will stop working. Either avoid apostrophes in labels, replace them with `&apos;`, or rewrite the attribute using double-quote delimiters with escaped inner quotes (`data-steps="[{\"label\":\"...\"}]"`).
-
-**HTML:**
-```html
-<div class="flow-animation" data-steps='[
-  {"highlight":"flow-actor-1","label":"User clicks the button"},
-  {"highlight":"flow-actor-1","label":"Frontend sends request","packet":true,"from":"actor-1","to":"actor-2"},
-  {"highlight":"flow-actor-2","label":"Backend calls the database","packet":true,"from":"actor-2","to":"actor-3"}
-]'>
-  <div class="flow-actors">
-    <div class="flow-actor" id="flow-actor-1">
-      <div class="flow-actor-icon">A</div>
-      <span>Actor 1</span>
-    </div>
-    <div class="flow-actor" id="flow-actor-2">
-      <div class="flow-actor-icon">B</div>
-      <span>Actor 2</span>
-    </div>
-    <div class="flow-actor" id="flow-actor-3">
-      <div class="flow-actor-icon">C</div>
-      <span>Actor 3</span>
-    </div>
-  </div>
-
-  <div class="flow-packet" id="flow-packet"></div>
-
-  <div class="flow-step-label" id="flow-label">Click "Next Step" to begin</div>
-
-  <div class="flow-controls">
-    <button class="btn flow-next-btn">Next Step</button>
-    <button class="btn flow-reset-btn">Restart</button>
-    <span class="flow-progress"></span>
-  </div>
-</div>
-```
-
-**CSS for active actor glow:**
-```css
-.flow-actor.active {
-  box-shadow: 0 0 0 3px var(--color-accent), 0 0 20px rgba(217, 79, 48, 0.2);
-  transform: scale(1.05);
-  transition: all var(--duration-normal) var(--ease-out);
-}
-```
-
----
-
-## Interactive Architecture Diagram
-
-Full-system diagram where hovering/clicking a component shows a description tooltip.
-
-**HTML:**
-```html
-<div class="arch-diagram">
-  <div class="arch-zone arch-zone-browser">
-    <h4 class="arch-zone-label">Browser</h4>
-    <div class="arch-component" data-desc="Injects UI into the web page, reads DOM, captures user actions"
-         onclick="showArchDesc(this)">
-      <div class="arch-icon">📄</div>
-      <span>Component A</span>
-    </div>
-    <!-- more components -->
-  </div>
-  <div class="arch-zone arch-zone-external">
-    <h4 class="arch-zone-label">External Services</h4>
-    <!-- API cards -->
-  </div>
-  <div class="arch-description" id="arch-desc">Click any component to learn what it does</div>
-</div>
-```
-
----
-
-## Layer Toggle Demo
-
-Shows how different layers (e.g., HTML/CSS/JS, or data/logic/UI) build on each other. Three tabs switch between views.
-
-**HTML:**
-```html
-<div class="layer-demo">
-  <div class="layer-tabs">
-    <button class="layer-tab active" onclick="showLayer('html')">HTML</button>
-    <button class="layer-tab" onclick="showLayer('css')">+ CSS</button>
-    <button class="layer-tab" onclick="showLayer('js')">+ JS</button>
-  </div>
-  <div class="layer-viewport">
-    <div class="layer" id="layer-html" style="display:block">
-      <!-- Raw unstyled version -->
-    </div>
-    <div class="layer" id="layer-css" style="display:none">
-      <!-- Styled version -->
-    </div>
-    <div class="layer" id="layer-js" style="display:none">
-      <!-- Interactive version -->
-    </div>
-  </div>
-  <p class="layer-description" id="layer-desc">This is the raw HTML...</p>
-</div>
-```
-
----
-
-## "Spot the Bug" Challenge
-
-Show code with a deliberate bug. User clicks the buggy line. Reveal explains the issue.
-
-**HTML:**
-```html
-<div class="bug-challenge">
-  <h3>Find the bug in this code:</h3>
-  <div class="bug-code">
-    <div class="bug-line" data-line="1" onclick="checkBugLine(this, false)">
-      <span class="line-num">1</span>
-      <code>chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {</code>
-    </div>
-    <div class="bug-line" data-line="2" onclick="checkBugLine(this, false)">
-      <span class="line-num">2</span>
-      <code>  if (msg.action === 'fetchData') {</code>
-    </div>
-    <div class="bug-line bug-target" data-line="3" onclick="checkBugLine(this, true)">
-      <span class="line-num">3</span>
-      <code>    fetch(url).then(r => r.json()).then(data => sendResponse(data));</code>
-    </div>
-    <div class="bug-line" data-line="4" onclick="checkBugLine(this, false)">
-      <span class="line-num">4</span>
-      <code>  }</code>
-    </div>
-    <div class="bug-line" data-line="5" onclick="checkBugLine(this, false)">
-      <span class="line-num">5</span>
-      <code>});</code>
-    </div>
-  </div>
-  <div class="bug-feedback" id="bug-feedback"></div>
-</div>
-```
-
-**JS:**
-```javascript
-window.checkBugLine = function(el, isCorrect) {
-  const feedback = el.closest('.bug-challenge').querySelector('.bug-feedback');
-  if (isCorrect) {
-    el.classList.add('correct');
-    feedback.innerHTML = '<strong>Found it!</strong> The listener uses an async operation (fetch) but doesn\'t return true. Chrome closes the message channel before the response can be sent. Fix: add <code>return true;</code> at the end.';
-    feedback.className = 'bug-feedback show success';
-  } else {
-    el.classList.add('incorrect');
-    feedback.innerHTML = 'Not this line — look for where the async timing might cause problems...';
-    feedback.className = 'bug-feedback show error';
-    setTimeout(() => { el.classList.remove('incorrect'); feedback.className = 'bug-feedback'; }, 2000);
-  }
-};
-```
-
----
-
-## Scenario Quiz
-
-"What would a senior engineer do?" — situational questions with explanations.
-
-Same HTML/CSS/JS pattern as Multiple-Choice Quizzes, but with longer scenario descriptions and more detailed explanations. Wrap each question in a scenario context block:
-
-```html
-<div class="scenario-block">
-  <div class="scenario-context">
-    <span class="scenario-label">Scenario</span>
-    <p>Your app processes a 3-hour podcast transcript. The API has a 16,000 token limit. What do you do?</p>
-  </div>
-  <!-- quiz-options here -->
-</div>
-```
-
----
-
-## Callout Boxes
-
-"Aha!" moments — universal CS insights. Max 2 per module.
-
+Max two per module.
 ```html
 <div class="callout callout-accent">
   <div class="callout-icon">💡</div>
   <div class="callout-content">
-    <strong class="callout-title">Key Insight</strong>
-    <p>This pattern — splitting responsibilities into focused roles — is one of the most important ideas in software engineering. Engineers call it "separation of concerns."</p>
+    <strong class="callout-title">Why this matters</strong>
+    <p>One or two sentences.</p>
   </div>
 </div>
 ```
+Variants: `callout-accent` (key insight), `callout-info` (good to know), `callout-tip` (pro tip, green), `callout-caution` (heads-up, amber), `callout-warning` (common mistake / data loss, red).
 
-**Variants:**
-- `callout-accent`: vermillion left border, light accent background (for CS insights)
-- `callout-info`: teal left border, light info background (for "good to know")
-- `callout-warning`: red left border, light error background (for common mistakes)
+## Pattern Cards  [all]
 
----
-
-## Pattern/Feature Cards
-
-Grid of cards highlighting engineering patterns, tech stack components, or key concepts.
-
+Grid of concepts, features or core objects.
 ```html
-<div class="pattern-cards">
-  <div class="pattern-card" style="border-top: 3px solid var(--color-actor-1)">
-    <div class="pattern-icon" style="background: var(--color-actor-1)">🔄</div>
-    <h4 class="pattern-title">Caching</h4>
-    <p class="pattern-desc">Store results to avoid redundant work — like keeping leftovers instead of cooking a new meal every time.</p>
+<div class="pattern-cards stagger-children">
+  <div class="pattern-card animate-in">
+    <div class="pattern-icon">📓</div>
+    <h4 class="pattern-title">Notebooks</h4>
+    <p class="pattern-desc">Folders for grouping notes — like drawers in a filing cabinet.</p>
   </div>
-  <!-- more cards -->
+  <!-- 2–6 cards -->
 </div>
 ```
+Optional per-card color: `style="--color-accent: var(--color-actor-2)"` on `.pattern-card` tints its icon.
 
-```css
-.pattern-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
-}
-.pattern-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal);
-}
-.pattern-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-```
+## Numbered Step Cards  [all]
 
----
-
-## Flow Diagrams
-
-**Horizontal flow (desktop):**
-```html
-<div class="flow-steps">
-  <div class="flow-step">
-    <div class="flow-step-num">1</div>
-    <p>User clicks button</p>
-  </div>
-  <div class="flow-arrow">→</div>
-  <div class="flow-step">
-    <div class="flow-step-num">2</div>
-    <p>Component A detects click</p>
-  </div>
-  <div class="flow-arrow">→</div>
-  <!-- more steps -->
-</div>
-```
-
-Arrows rotate to `↓` on mobile via CSS transform.
-
----
-
-## Permission/Config Badges
-
-For annotating config files, permissions, or settings:
-
-```html
-<div class="badge-list">
-  <div class="badge-item">
-    <code class="badge-code">storage</code>
-    <span class="badge-desc">Save data between sessions (like browser bookmarks)</span>
-  </div>
-  <div class="badge-item">
-    <code class="badge-code">activeTab</code>
-    <span class="badge-desc">Access the currently open tab (only when the user clicks)</span>
-  </div>
-</div>
-```
-
-```css
-.badge-item {
-  display: flex; align-items: center; gap: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-sm);
-  transition: border-color var(--duration-fast);
-}
-.badge-item:hover { border-color: var(--color-accent-muted); }
-.badge-code {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  background: var(--color-bg-code);
-  color: #CBA6F7;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-}
-```
-
----
-
-## Glossary Tooltips
-
-The most important accessibility feature for non-technical learners. Any technical term in the course text should be wrapped in a tooltip that shows a plain-English definition on hover (desktop) or tap (mobile). The learner never has to leave the page or Google anything.
-
-**HTML — mark up terms inline:**
-```html
-<p>The extension uses a
-  <span class="term" data-definition="A service worker is a background script that runs independently of the web page — like a behind-the-scenes assistant that's always on, even when you're not looking at the page.">service worker</span>
-  to handle API calls.
-</p>
-```
-
-**CSS:**
-```css
-.term {
-  border-bottom: 1.5px dashed var(--color-accent-muted);
-  cursor: pointer;    /* NOT cursor: help — pointer feels clickable and inviting */
-  position: relative;
-}
-.term:hover, .term.active {
-  border-bottom-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-/* The tooltip bubble — uses position: fixed and is appended to document.body
-   via JS so it is NEVER clipped by ancestor overflow: hidden containers
-   (like translation blocks). See JS section below for positioning logic. */
-.term-tooltip {
-  position: fixed;        /* CRITICAL: fixed, not absolute — prevents clipping */
-  background: var(--color-bg-code);
-  color: #CDD6F4;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-sm);
-  font-family: var(--font-body);
-  line-height: var(--leading-normal);
-  width: max(200px, min(320px, 80vw));
-  box-shadow: var(--shadow-lg);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--duration-fast);
-  z-index: 10000;        /* Above everything, including nav */
-}
-/* Arrow pointing down */
-.term-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: var(--color-bg-code);
-}
-.term-tooltip.visible {
-  opacity: 1;
-}
-
-/* If tooltip goes off-screen top, flip to below */
-.term-tooltip.flip {
-  bottom: auto;
-  top: calc(100% + 8px);
-}
-.term-tooltip.flip::after {
-  top: auto;
-  bottom: 100%;
-  border-top-color: transparent;
-  border-bottom-color: var(--color-bg-code);
-}
-```
-
-**JS — position: fixed tooltips appended to body (never clipped by overflow):**
-```javascript
-// Tooltip container — appended to body so it's never clipped
-let activeTooltip = null;
-
-function positionTooltip(term, tip) {
-  const rect = term.getBoundingClientRect();
-  const tipWidth = 300; // approximate
-  let left = rect.left + rect.width / 2 - tipWidth / 2;
-  // Clamp to viewport
-  left = Math.max(8, Math.min(left, window.innerWidth - tipWidth - 8));
-
-  // Try above first
-  let top = rect.top - 8;
-  tip.style.left = left + 'px';
-
-  // Position above by default, flip below if no room
-  document.body.appendChild(tip);
-  const tipHeight = tip.offsetHeight;
-  if (rect.top - tipHeight - 8 < 0) {
-    // Flip below
-    tip.style.top = (rect.bottom + 8) + 'px';
-    tip.classList.add('flip');
-  } else {
-    tip.style.top = (rect.top - tipHeight - 8) + 'px';
-    tip.classList.remove('flip');
-  }
-}
-
-document.querySelectorAll('.term').forEach(term => {
-  const tip = document.createElement('span');
-  tip.className = 'term-tooltip';
-  tip.textContent = term.dataset.definition;
-
-  // Hover for desktop
-  term.addEventListener('mouseenter', () => {
-    if (activeTooltip && activeTooltip !== tip) {
-      activeTooltip.classList.remove('visible');
-      activeTooltip.remove();
-    }
-    positionTooltip(term, tip);
-    requestAnimationFrame(() => tip.classList.add('visible'));
-    activeTooltip = tip;
-  });
-
-  term.addEventListener('mouseleave', () => {
-    tip.classList.remove('visible');
-    setTimeout(() => { if (!tip.classList.contains('visible')) tip.remove(); }, 150);
-    activeTooltip = null;
-  });
-
-  // Tap for mobile
-  term.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (activeTooltip && activeTooltip !== tip) {
-      activeTooltip.classList.remove('visible');
-      activeTooltip.remove();
-    }
-    if (tip.classList.contains('visible')) {
-      tip.classList.remove('visible');
-      tip.remove();
-      activeTooltip = null;
-    } else {
-      positionTooltip(term, tip);
-      requestAnimationFrame(() => tip.classList.add('visible'));
-      activeTooltip = tip;
-    }
-  });
-});
-
-// Close tooltips when clicking elsewhere
-document.addEventListener('click', () => {
-  if (activeTooltip) {
-    activeTooltip.classList.remove('visible');
-    activeTooltip.remove();
-    activeTooltip = null;
-  }
-});
-```
-
-**Rules:**
-- Mark up EVERY technical term on first use in each module (API, DOM, callback, async, endpoint, middleware, etc.)
-- Keep definitions to 1-2 sentences max, in everyday language
-- Use a metaphor in the definition when it helps — e.g., "A **callback** is like leaving your phone number at a restaurant so they can call you when your table is ready"
-- Don't mark the same term twice within the same screen — only on first appearance per module
-- The dashed underline should be subtle enough not to distract but visible enough that curious learners discover it
-
----
-
-## Visual File Tree
-
-Use instead of paragraphs listing "this folder does X, that folder does Y." Much easier to scan.
-
-```html
-<div class="file-tree">
-  <div class="ft-folder open">
-    <span class="ft-name">app/</span>
-    <span class="ft-desc">Pages and API routes</span>
-    <div class="ft-children">
-      <div class="ft-folder">
-        <span class="ft-name">api/</span>
-        <span class="ft-desc">Backend endpoints the frontend calls</span>
-      </div>
-      <div class="ft-file">
-        <span class="ft-name">layout.tsx</span>
-        <span class="ft-desc">The shell that wraps every page</span>
-      </div>
-    </div>
-  </div>
-  <div class="ft-folder">
-    <span class="ft-name">components/</span>
-    <span class="ft-desc">Reusable UI building blocks</span>
-  </div>
-  <div class="ft-folder">
-    <span class="ft-name">lib/</span>
-    <span class="ft-desc">Shared logic and utilities</span>
-  </div>
-</div>
-```
-
-```css
-.file-tree { font-family: var(--font-mono); font-size: var(--text-sm); }
-.ft-folder, .ft-file {
-  padding: var(--space-2) var(--space-3);
-  border-left: 2px solid var(--color-border-light);
-  margin-left: var(--space-4);
-}
-.ft-folder > .ft-name { color: var(--color-accent); font-weight: 600; }
-.ft-folder > .ft-name::before { content: '📁 '; }
-.ft-file > .ft-name::before { content: '📄 '; }
-.ft-desc {
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  margin-left: var(--space-2);
-  font-size: var(--text-xs);
-}
-.ft-children { margin-left: var(--space-4); }
-```
-
----
-
-## Icon-Label Rows
-
-For listing components, features, or concepts visually. Replaces bullet-point paragraphs.
-
-```html
-<div class="icon-rows">
-  <div class="icon-row">
-    <div class="icon-circle" style="background: var(--color-actor-1)">🖥️</div>
-    <div>
-      <strong>Frontend (Next.js)</strong>
-      <p>What the user sees and interacts with</p>
-    </div>
-  </div>
-  <div class="icon-row">
-    <div class="icon-circle" style="background: var(--color-actor-2)">⚡</div>
-    <div>
-      <strong>API Routes</strong>
-      <p>Backend logic that runs on the server</p>
-    </div>
-  </div>
-  <div class="icon-row">
-    <div class="icon-circle" style="background: var(--color-actor-3)">🗄️</div>
-    <div>
-      <strong>Database (Supabase)</strong>
-      <p>Where all the data is stored permanently</p>
-    </div>
-  </div>
-</div>
-```
-
-```css
-.icon-rows { display: flex; flex-direction: column; gap: var(--space-4); }
-.icon-row {
-  display: flex; align-items: center; gap: var(--space-4);
-  padding: var(--space-4);
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
-.icon-row p { margin: 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
-.icon-circle {
-  width: 48px; height: 48px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.25rem; flex-shrink: 0;
-}
-```
-
----
-
-## Numbered Step Cards
-
-For sequences that would otherwise be a numbered paragraph list. Visual, scannable, and each step stands alone.
-
+A vertical timeline for sequences. Steps can contain screenshots or code.
 ```html
 <div class="step-cards">
   <div class="step-card">
     <div class="step-num">1</div>
     <div class="step-body">
-      <strong>User pastes a YouTube URL</strong>
-      <p>The frontend captures the URL and extracts the video ID</p>
-    </div>
-  </div>
-  <div class="step-card">
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <strong>API fetches the transcript</strong>
-      <p>A server-side route calls an external service to get the video's text</p>
-    </div>
-  </div>
-  <div class="step-card">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <strong>AI analyzes the content</strong>
-      <p>The transcript is sent to an AI model that extracts key moments</p>
+      <strong>Create the note</strong>
+      <p>Press <span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>N</kbd></span>.</p>
     </div>
   </div>
 </div>
 ```
 
-```css
-.step-cards { display: flex; flex-direction: column; gap: var(--space-3); }
-.step-card {
-  display: flex; align-items: flex-start; gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-accent);
-  box-shadow: var(--shadow-sm);
-}
-.step-num {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--color-accent);
-  color: white; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display);
-  flex-shrink: 0;
-}
-.step-body p { margin: var(--space-1) 0 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
+## Flow Steps  [all]
+
+Compact horizontal sequence (stacks on mobile).
+```html
+<div class="flow-steps">
+  <div class="flow-step"><div class="flow-step-num">1</div><p>Type</p></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-step-num">2</div><p>Pause 0.8s</p></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-step-num">3</div><p>Saved</p></div>
+</div>
 ```
+
+## Icon Rows  [all]
+
+```html
+<div class="icon-rows">
+  <div class="icon-row">
+    <div class="icon-circle">🍎</div>
+    <div><strong>macOS 12+</strong><p>Apple silicon and Intel</p></div>
+  </div>
+</div>
+```
+
+## File Tree  [all]
+
+Internals: the repo. End-user: where the user's data lives. Library: the package layout they import from.
+```html
+<div class="file-tree">
+  <div class="ft-folder"><span class="ft-name">Driftwood/</span><span class="ft-desc">Your library</span>
+    <div class="ft-children">
+      <div class="ft-folder"><span class="ft-name">Travel/</span><span class="ft-desc">A notebook is a folder</span></div>
+      <div class="ft-file"><span class="ft-name">Ideas.md</span><span class="ft-desc">A note is a file</span></div>
+    </div>
+  </div>
+</div>
+```
+
+## Badge List  [all]
+
+Flags, permissions, config keys with one-line meanings.
+```html
+<div class="badge-list">
+  <div class="badge-item"><code class="badge-code">--safe-mode</code><span class="badge-desc">Starts without plugins</span></div>
+</div>
+```
+
+## Glossary Tooltips  [all]
+
+```html
+<span class="term" data-definition="A simple text format where # makes a heading. Any editor can open it.">Markdown</span>
+```
+- Shows on hover, keyboard focus or tap; title is the term's text (override with `data-term="…"`).
+- First use per module only. 1–2 sentences, everyday language, a metaphor when it helps.
+- Density depends on mode — see the audience file.
+
+## Tabs  [all]
+
+Generic tabs. Panels pair with tabs by order.
+```html
+<div class="tabs" data-tab-group="platform">
+  <div class="tab-list">
+    <button class="tab" data-tab="mac">macOS</button>
+    <button class="tab" data-tab="win">Windows</button>
+    <button class="tab" data-tab="linux">Linux</button>
+  </div>
+  <div class="tab-panel"><p>…</p></div>
+  <div class="tab-panel"><p>…</p></div>
+  <div class="tab-panel"><p>…</p></div>
+</div>
+```
+- `data-tab-group` syncs every tabs block sharing the name (choose Python once, every code sample switches).
+- `data-tab-group="platform"` with keys `mac` / `win` / `linux` also follows the learner's OS and the top-bar platform switch.
+- Library courses with several languages: `data-tab-group="lang"` with `data-tab="python"`, `data-tab="go"`, … Put a `.code-block` directly inside each `.tab-panel`.
+
+---
+
+## Multiple-Choice Quiz  [all]
+
+```html
+<div class="quiz-container" id="quiz-module3">
+  <div class="quiz-question-block"
+       data-correct="b"
+       data-explanation-right="Because notes are plain files, any folder-sync tool works."
+       data-explanation-wrong="There's no account system — notes are ordinary files you can sync yourself.">
+    <h3 class="quiz-question">You want your notes on a second laptop. What's the simplest route?</h3>
+    <div class="quiz-options">
+      <button class="quiz-option" data-value="a"><div class="quiz-option-radio"></div><span>Export everything as PDF</span></button>
+      <button class="quiz-option" data-value="b"><div class="quiz-option-radio"></div><span>Keep the library in a synced folder</span></button>
+      <button class="quiz-option" data-value="c"><div class="quiz-option-radio"></div><span>Sign in on both machines</span></button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+  <!-- 3–5 question blocks -->
+  <button class="quiz-check-btn">Check answers</button>
+  <button class="quiz-reset-btn">Try again</button>
+</div>
+```
+- Letters (A, B, C) and ✓/✕ marks are drawn automatically in `.quiz-option-radio`.
+- Change the "Check your understanding" label with `data-label="…"` on `.quiz-container`.
+- Explanations can contain simple HTML (`<code>`, `<strong>`). Use `&quot;` for quotes inside attributes.
+
+## Scenario Quiz  [all]
+
+Same as above; wrap the question in a scenario:
+```html
+<div class="quiz-question-block" data-correct="a" data-explanation-right="…" data-explanation-wrong="…">
+  <div class="scenario-block">
+    <div class="scenario-context">
+      <span class="scenario-label">Scenario</span>
+      <p>Sam's laptop died mid-save. When they reopen the app, a note shows an older version…</p>
+    </div>
+  </div>
+  <h3 class="quiz-question">What should Sam do first?</h3>
+  <div class="quiz-options">…</div>
+  <div class="quiz-feedback"></div>
+</div>
+```
+
+## Drag-and-Drop Matching  [all]
+
+Works with mouse drag, and with tap-a-chip-then-tap-a-target (touch and keyboard).
+```html
+<div class="dnd-container" id="dnd-2">
+  <p class="dnd-instructions">Drag each feature onto the job it does best — or tap a feature, then a job.</p>
+  <div class="dnd-chips">
+    <div class="dnd-chip" data-answer="tags">Tags</div>
+    <div class="dnd-chip" data-answer="notebooks">Notebooks</div>
+  </div>
+  <div class="dnd-zones">
+    <div class="dnd-zone" data-correct="notebooks">
+      <p class="dnd-zone-label">Keep work and personal notes apart</p>
+      <div class="dnd-zone-target">Drop here</div>
+    </div>
+    <div class="dnd-zone" data-correct="tags">
+      <p class="dnd-zone-label">Mark everything that's still to-do, across projects</p>
+      <div class="dnd-zone-target">Drop here</div>
+    </div>
+  </div>
+  <button class="btn btn-primary dnd-check-btn">Check matches</button>
+  <button class="btn btn-ghost dnd-reset-btn">Reset</button>
+</div>
+```
+
+## Group Chat Animation  [all]
+
+Actors "talking" in a messenger-style thread, revealed one message at a time.
+```html
+<div class="chat-window" id="chat-module2">
+  <div class="chat-header">#main-window <span class="chat-members">3 members</span></div>
+  <div class="chat-messages">
+    <div class="chat-message me" data-sender="you">
+      <div class="chat-avatar" style="background: var(--color-actor-1)">Y</div>
+      <div class="chat-bubble"><span class="chat-sender">You</span><p>Where did my shopping list go?</p></div>
+    </div>
+    <div class="chat-message" data-sender="sidebar">
+      <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+      <div class="chat-bubble"><span class="chat-sender" style="color: var(--color-actor-2)">Sidebar</span><p>It's in Recipes — click that notebook.</p></div>
+    </div>
+  </div>
+  <div class="chat-typing" style="display:none">
+    <div class="chat-avatar">?</div>
+    <div class="chat-typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+  </div>
+  <div class="chat-controls">
+    <button class="btn btn-primary chat-next-btn">Next message</button>
+    <button class="btn chat-all-btn">Play all</button>
+    <button class="btn btn-ghost chat-reset-btn">Replay</button>
+    <span class="chat-progress"></span>
+  </div>
+</div>
+```
+- `me` on a message right-aligns it in the accent color — use it for "You" (end-user) or "Your code" (library).
+- `.chat-header` is optional. Messages start hidden automatically.
+- Actor colors: `--color-actor-1` … `--color-actor-6`; keep each actor's color consistent across the course.
+
+## Flow Animation  [all]
+
+Step-by-step highlight of actors with a packet travelling between them.
+```html
+<div class="flow-animation" data-steps='[
+  {"highlight":"flow-you","label":"You choose File › Export › PDF"},
+  {"highlight":"flow-app","label":"The app renders your note","packet":true,"from":"you","to":"app"},
+  {"highlight":"flow-disk","label":"The PDF is saved where you chose","packet":true,"from":"app","to":"disk"}
+]'>
+  <div class="flow-actors">
+    <div class="flow-actor" id="flow-you"><div class="flow-actor-icon">🙂</div><span>You</span></div>
+    <div class="flow-actor" id="flow-app"><div class="flow-actor-icon">🪵</div><span>Driftwood</span></div>
+    <div class="flow-actor" id="flow-disk"><div class="flow-actor-icon">💾</div><span>Your disk</span></div>
+  </div>
+  <div class="flow-step-label">Press Play or Next step to begin</div>
+  <div class="flow-controls">
+    <button class="btn btn-primary flow-play-btn">▶ Play</button>
+    <button class="btn flow-next-btn">Next step</button>
+    <button class="btn btn-ghost flow-reset-btn">Restart</button>
+    <span class="flow-progress"></span>
+  </div>
+</div>
+```
+- Actor ids are `flow-<name>`. In steps, `highlight` is the full id; `from`/`to` are the `<name>` part (full ids also work).
+- 3–5 actors; 3–8 steps. Progress dots are added automatically.
+- **Never put a raw apostrophe in `data-steps`** — the attribute is single-quoted. Write "the users file" → "the user&apos;s file", or rephrase.
+
+## Architecture / UI Map  [all]
+
+Clickable components grouped in zones; clicking shows a description. Internals: services. End-user: regions of the window. Library: public types.
+```html
+<div class="arch-diagram">
+  <div class="arch-zone">
+    <div class="arch-zone-label">Main window</div>
+    <div class="arch-component" data-desc="Switch between notebooks and tags."><div class="arch-icon">🗂</div><span>Sidebar</span></div>
+    <div class="arch-component" data-desc="Where you write. Saves automatically."><div class="arch-icon">✍️</div><span>Editor</span></div>
+  </div>
+  <div class="arch-description">Click any part to learn what it does.</div>
+</div>
+```
+
+## Spot the Bug / Spot the Mistake  [all]
+
+Code version (internals, library):
+```html
+<div class="bug-challenge">
+  <h3>Which line leaks a connection?</h3>
+  <div class="bug-code">
+    <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Opening is fine."><span class="line-num">1</span><code>client, err := driftwood.Open(path)</code></div>
+    <div class="bug-line" onclick="checkBugLine(this, true)" data-explanation="The early return skips client.Close(). Use defer right after Open."><span class="line-num">2</span><code>if err != nil { return err }</code></div>
+  </div>
+  <div class="bug-feedback"></div>
+</div>
+```
+Workflow version (end-user) — add `steps` to `.bug-code` for a light, prose style:
+```html
+<div class="bug-code steps">
+  <div class="bug-line" onclick="checkBugLine(this, true)" data-explanation="Delete only after confirming the copy works."><span class="line-num">2</span><code>Delete the library folder from the old laptop</code></div>
+</div>
+```
+
+## Layer Toggle  [int]
+
+Prefer **Tabs** for new courses. Legacy pattern (still supported):
+```html
+<div class="layer-demo">
+  <div class="layer-tabs">
+    <button class="layer-tab active" onclick="showLayer('layer-html', this)" data-desc="Raw structure">HTML</button>
+    <button class="layer-tab" onclick="showLayer('layer-css', this)" data-desc="Now styled">+ CSS</button>
+  </div>
+  <div class="layer-viewport">
+    <div class="layer" id="layer-html" style="display:block">…</div>
+    <div class="layer" id="layer-css" style="display:none">…</div>
+  </div>
+  <p class="layer-description">Raw structure</p>
+</div>
+```
+
+---
+
+## Keys & Shortcuts  [user] [lib]
+
+Platform-aware keys: the label switches with the learner's OS (auto-detected, and changeable with the top-bar switch, which appears automatically when a course uses these attributes).
+```html
+<span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd data-mac="⇧" data-win="Shift">Shift</kbd><kbd>M</kbd></span>
+```
+- Linux falls back to `data-win` unless `data-linux` is given. Use the mac symbols ⌘ ⌥ ⇧ ⌃ and Windows words Ctrl / Alt / Shift.
+- Electron `CmdOrCtrl` → `data-mac="⌘" data-win="Ctrl"`. `Alt` → `data-mac="⌥" data-win="Alt"`.
+- Platform-only content: `<p data-platform-only="mac">…</p>` (space-separate several: `"win linux"`).
+
+Shortcut cheat sheet:
+```html
+<div class="shortcut-list">
+  <div class="shortcut"><span class="shortcut-desc">Quick search</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>K</kbd></span></div>
+</div>
+```
+
+## Menu Paths  [user]
+
+Always show commands as their exact menu path:
+```html
+<span class="menu-path"><span>File</span><span>Export</span><span>PDF…</span></span>
+```
+Separators are drawn automatically. Copy the labels exactly, including the ellipsis. Works for Settings panes too: `Settings › Editor › Autosave`.
+
+## App Window  [user]
+
+A framed screenshot.
+```html
+<div class="app-window">
+  <div class="app-window-bar"><span class="app-window-title">Driftwood — All Notes</span></div>
+  <div class="app-window-body">
+    <img src="screenshots/01-main-window.png" alt="Main window: sidebar on the left, note list, and editor">
+  </div>
+  <div class="app-window-caption">Optional caption.</div>
+</div>
+```
+- `is-illustration` on `.app-window` adds an "Illustration" badge — required when the body is an HTML mock-up rather than a real screenshot.
+- For a clipped dialog/panel screenshot, the frame is still appropriate; set the title to the dialog's name.
+
+## UI Tour  [user]
+
+A screenshot with numbered hotspots and an explanation panel with Start / Next / Back.
+```html
+<div class="ui-tour wide-block" data-title="The main window" data-intro="Six areas do all the work. Click a marker or press Start.">
+  <div class="app-window">
+    <div class="app-window-bar"><span class="app-window-title">Driftwood</span></div>
+    <div class="app-window-body">
+      <img src="screenshots/01-main-window.png" alt="Driftwood main window">
+      <button class="hotspot" style="--x:9%;--y:1.6%" data-title="New Note"
+              data-desc="Creates a blank note. Shortcut: <kbd data-mac='⌘' data-win='Ctrl'>Ctrl</kbd> <kbd>N</kbd>"
+              data-region="1%,0.5%,8%,4.2%"></button>
+      <!-- more hotspots, in tour order -->
+    </div>
+  </div>
+</div>
+```
+- `--x` / `--y`: marker position as % of the image. `data-region`: optional highlight box `x,y,width,height` in % (dims the rest of the screenshot). `capture.cjs` generates both — see `screenshots.md`.
+- Place markers at a control's corner, not its center, so they don't cover its label.
+- Markers are numbered automatically; the panel is generated. `data-desc` may contain simple HTML — use **single quotes** for attributes inside it (the outer attribute is double-quoted). Platform-aware `<kbd>` keys work there too.
+- 4–8 hotspots per tour.
+
+## Setting Cards  [user] [lib]
+
+```html
+<div class="setting-list">
+  <div class="setting-card">
+    <span class="setting-name">Autosave delay</span>
+    <span class="setting-default">800 ms</span>
+    <span class="setting-where"><span class="menu-path"><span>Settings</span><span>Editor</span></span></span>
+    <p class="setting-effect">How long the app waits after you stop typing before saving. <strong>Lower it</strong> if your laptop battery is unreliable.</p>
+  </div>
+</div>
+```
+Defaults must come from the code. Only include settings worth changing — the feature map can list the rest.
+
+## Error Cards  [user] [lib]
+
+```html
+<div class="error-card">
+  <div class="error-message">Could not save "Trip packing list": EACCES permission denied</div>
+  <div class="error-body">
+    <div><h4>What it means</h4>Your computer refused to let the app write to the library folder.</div>
+    <div><h4>How to fix it</h4>Choose <span class="menu-path"><span>Settings</span><span>Library</span><span>Change…</span></span> and pick a folder in Documents.</div>
+  </div>
+</div>
+```
+Add `is-warning` for warnings/confirmations. The message text must match the app's exactly (placeholders like `%s` become a realistic example). Library mode: the message is the error type/code, e.g. `ErrRateLimited (HTTP 429)`.
+
+## Try-It Checklist  [user] [lib]
+
+A short hands-on task list; ticks persist in the learner's browser.
+```html
+<div class="try-it" id="tryit-first-note">
+  <div class="try-it-header"><span class="try-it-title">Try it in the app</span></div>
+  <ul>
+    <li><label><input type="checkbox"><span>Create a note called "Test drive"</span></label></li>
+    <li><label><input type="checkbox"><span>Export it as a PDF</span></label></li>
+  </ul>
+</div>
+```
+Give each checklist a unique `id`. 2–5 items. Place after a workflow is taught.
+
+## Feature Map  [user] [lib]
+
+Searchable, filterable map of every feature (or every public API) — the final module's centerpiece.
+```html
+<div class="feature-map wide-block">
+  <div class="feature-map-controls">
+    <input class="feature-search" type="search" placeholder="Search features…" aria-label="Search features">
+    <button class="feature-filter" data-filter="all">All</button>
+    <button class="feature-filter" data-filter="write">Writing</button>
+    <button class="feature-filter" data-filter="share">Sharing</button>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-item" data-category="share" data-tags="pdf print">
+      <span class="feature-name">Export as PDF</span>
+      <span class="feature-how"><span class="menu-path"><span>File</span><span>Export</span><span>PDF…</span></span> · <a href="#module-2">Module 2</a></span>
+    </div>
+  </div>
+</div>
+```
+- `data-category` may hold several space-separated categories; `data-tags` adds hidden search words (synonyms users might type).
+- Every item says **how to reach it** (menu path, shortcut, or API name) and links to the module that teaches it, if any.
+
+---
+
+## API Card  [lib]
+
+```html
+<div class="api-card">
+  <div class="api-signature"><span class="api-kind">method</span>doc.export(format: "pdf" | "html", options?: ExportOptions): Promise&lt;Uint8Array&gt;</div>
+  <div class="api-body">
+    <p class="api-summary">Renders the document. Throws <code>ExportError</code> if an image can't be read.</p>
+    <table class="param-table">
+      <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>format</td><td>Output type.</td></tr>
+        <tr><td>options.theme<span class="optional">optional</span></td><td>Theme name. Default <code>"paper"</code>.</td></tr>
+      </tbody>
+    </table>
+    <p class="api-returns"><strong>Returns</strong>The file contents as bytes.</p>
+  </div>
+</div>
+```
+`api-kind`: function, method, class, type, interface, const, hook, command. The signature is copied exactly from source (escape `<` `>`).
+
+## Do / Don't Comparison  [lib] (also [user] for workflows)
+
+```html
+<div class="compare">
+  <div class="compare-col dont">
+    <div class="compare-label">Don't</div>
+    <div class="code-block"><pre><code>doc.export(<span class="code-string">"pdf"</span>);  <span class="code-comment">// no await</span></code></pre></div>
+    <p>You get a Promise, not the bytes.</p>
+  </div>
+  <div class="compare-col do">
+    <div class="compare-label">Do</div>
+    <div class="code-block"><pre><code><span class="code-keyword">await</span> doc.export(<span class="code-string">"pdf"</span>);</code></pre></div>
+    <p>Wait for rendering to finish.</p>
+  </div>
+</div>
+```
+For end-user workflows, replace the code block with `<p>` text.

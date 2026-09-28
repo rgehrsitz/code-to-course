@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftwood — Component Gallery</title>
+
+  <!-- Apply saved/system theme before first paint (prevents a light flash in dark mode) -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('course-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <!-- Google Fonts: Bricolage Grotesque · Geist · JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!--
+    CUSTOMIZE PER COURSE — replace #D94F30 with ONE hex value.
+    Every other accent shade (hover, light tint, ring) is derived from it
+    automatically, in both light and dark mode.
+      vermillion  #D94F30  (default — warm, energetic)
+      coral       #E06B56
+      teal        #1F7A8C  (calm, technical tools)
+      amber       #C98A1B  (creative tools)
+      forest      #2D8B55  (data / productivity)
+      indigo      #4F5BD5  (developer libraries — use sparingly, no gradients)
+      rose        #C2577E
+  -->
+  <style>
+    :root { --color-accent: #D94F30; }
+  </style>
+
+  <script src="main.js" defer></script>
+</head>
+<body class="has-sidebar">
+
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn toc-toggle" id="toc-toggle" aria-label="Open table of contents" aria-controls="sidebar" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      </button>
+      <span class="topbar-title">Driftwood — Component Gallery</span>
+      <span class="topbar-module" id="topbar-module"></span>
+      <div class="topbar-actions">
+        <span class="topbar-progress" id="topbar-progress">0%</span>
+        <div class="platform-switch" id="platform-switch" role="group" aria-label="Keyboard shortcuts for" hidden>
+          <button type="button" data-platform="mac" aria-pressed="false">macOS</button>
+          <button type="button" data-platform="win" aria-pressed="false">Windows</button>
+          <button type="button" data-platform="linux" aria-pressed="false">Linux</button>
+        </div>
+        <button class="icon-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="progress-bar" id="progress-bar" role="progressbar" aria-label="Course progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+  </header>
+
+  <!-- Table of contents: main.js builds the list from every .module's .module-title -->
+  <nav class="sidebar" id="sidebar" aria-label="Course modules">
+    <div class="sidebar-label">Modules</div>
+    <ol class="toc" id="toc"></ol>
+    <div class="sidebar-footer">
+      Press <kbd>N</kbd> / <kbd>P</kbd> for next / previous module.
+    </div>
+  </nav>
+  <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+  <main id="main">
+    <!-- modules/*.html content is assembled here by build.sh -->
+<header class="course-hero" id="top">
+  <div class="course-hero-inner">
+    <span class="hero-eyebrow">Component gallery · End-user course</span>
+    <h1 class="hero-title">Get more out of <em>Driftwood</em></h1>
+    <p class="hero-subtitle">A fictional notes app, used to preview every element in the course design system — light and dark.</p>
+    <div class="hero-meta">
+      <span class="hero-chip">⏱ 25 minutes</span>
+      <span class="hero-chip">🧭 4 modules</span>
+      <span class="hero-chip">🖥 Driftwood v2.4 · macOS / Windows / Linux</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="#module-1">Start the course →</a>
+      <span class="lead" style="font-size:var(--text-sm)">No setup needed — just scroll.</span>
+    </div>
+  </div>
+</header>
+<section class="module" id="module-1">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">01</span><span class="module-meta">6 min</span>
+      <h1 class="module-title">Meet Driftwood</h1>
+      <p class="module-subtitle">What the app is for, and a guided tour of the main window.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Your notes, as plain files you own</h2>
+      <p class="lead">Driftwood stores every note as a <span class="term" data-definition="A simple text format where # makes a heading and * makes a bullet. Any text editor can open it, so your notes never get locked into one app.">Markdown</span> file in a folder on your computer. The app is a fast, friendly window onto that folder.</p>
+      <div class="pattern-cards stagger-children">
+        <div class="pattern-card animate-in"><div class="pattern-icon">📓</div><h4 class="pattern-title">Notebooks</h4><p class="pattern-desc">Folders for grouping notes — like drawers in a filing cabinet.</p></div>
+        <div class="pattern-card animate-in"><div class="pattern-icon">🏷</div><h4 class="pattern-title">Tags</h4><p class="pattern-desc">Labels that cut across notebooks. One note can wear many.</p></div>
+        <div class="pattern-card animate-in"><div class="pattern-icon">🔎</div><h4 class="pattern-title">Quick search</h4><p class="pattern-desc">Find any note by a word in it, in under a second.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">A tour of the main window</h2>
+      <div class="ui-tour wide-block" data-title="The main window" data-intro="Six areas do all the work. Click a marker or press Start.">
+        <div class="app-window">
+          <div class="app-window-bar"><span class="app-window-title">Driftwood — All Notes</span></div>
+          <div class="app-window-body">
+            <img src="screenshots/main-window.png" alt="Driftwood main window with sidebar, note list and editor">
+            <button class="hotspot" style="--x:9.6%;--y:1.6%" data-title="New Note" data-desc="Creates a blank note in the notebook you have selected. Shortcut: <span class='keys'><kbd data-mac='⌘' data-win='Ctrl'>Ctrl</kbd><kbd>N</kbd></span>" data-region="1%,0.5%,8%,4.2%"></button>
+            <button class="hotspot" style="--x:98.6%;--y:1.6%" data-title="Quick search" data-desc="Searches the text of every note, not just titles." data-region="77%,0.8%,22%,3.8%"></button>
+            <button class="hotspot" style="--x:17%;--y:30%" data-title="Sidebar" data-desc="Switch between your library, notebooks and tags." data-region="0%,5.5%,18.3%,90.5%"></button>
+            <button class="hotspot" style="--x:40%;--y:9%" data-title="Note list" data-desc="Notes in the current view, newest first. The orange bar marks the open note." data-region="18.3%,5.5%,23.4%,90.5%"></button>
+            <button class="hotspot" style="--x:70%;--y:30%" data-title="Editor" data-desc="Type here. Changes save automatically within a second." data-region="41.7%,5.5%,58.3%,90.5%"></button>
+            <button class="hotspot" style="--x:16%;--y:96.6%" data-title="Save status" data-desc="Green means everything is written to disk. Amber means a save is waiting." data-region="0%,96.3%,16%,3.7%"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">What happens when you click New Note</h2>
+      <div class="action-result">
+        <div class="action-col">
+          <div class="action-col-label">You do</div>
+          <ol class="action-steps">
+            <li>Select the <strong>Travel 2026</strong> notebook</li>
+            <li>Click <span class="menu-path"><span>File</span><span>New Note</span></span></li>
+            <li>Type a title and press <kbd>Enter</kbd></li>
+          </ol>
+        </div>
+        <div class="action-col">
+          <div class="action-col-label">What happens</div>
+          <ol class="action-steps">
+            <li>The notebook becomes the destination folder</li>
+            <li>A file named <code>untitled.md</code> appears in it</li>
+            <li>The file is renamed to match your title</li>
+          </ol>
+        </div>
+      </div>
+      <div class="callout callout-accent">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong class="callout-title">Why this matters</strong><p>Because notes are real files, you can back them up, sync them or open them in another editor — Driftwood never holds them hostage.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="quiz-container" id="quiz-1">
+        <div class="quiz-question-block" data-correct="b"
+             data-explanation-right="Notes are plain files in a folder, so any sync tool that syncs folders will work."
+             data-explanation-wrong="Driftwood has no account system — the notes are ordinary files in a folder you choose.">
+          <h3 class="quiz-question">You want your notes on a second laptop. What's the simplest route?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="a"><div class="quiz-option-radio"></div><span>Export every note as PDF and email them</span></button>
+            <button class="quiz-option" data-value="b"><div class="quiz-option-radio"></div><span>Put the Driftwood folder inside a synced folder (Dropbox, iCloud…)</span></button>
+            <button class="quiz-option" data-value="c"><div class="quiz-option-radio"></div><span>Sign in to a Driftwood account on both machines</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+        <button class="quiz-check-btn">Check answer</button>
+        <button class="quiz-reset-btn">Try again</button>
+      </div>
+    </section>
+  </div>
+</section>
+<section class="module" id="module-2">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">02</span><span class="module-meta">7 min</span>
+      <h1 class="module-title">From idea to exported PDF</h1>
+      <p class="module-subtitle">The core workflow, end to end.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Four steps</h2>
+      <div class="step-cards">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><strong>Create the note</strong><p>Press <span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>N</kbd></span> anywhere in the app.</p></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><strong>Tag it</strong><p>Type <code>#travel</code> anywhere in the text — it becomes a tag instantly.</p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><strong>Preview</strong><p>Toggle the preview with <span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>E</kbd></span>.</p></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body"><strong>Export</strong><p>Choose <span class="menu-path"><span>File</span><span>Export</span><span>PDF…</span></span></p></div></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Watch an export happen</h2>
+      <div class="flow-animation" data-steps='[
+        {"highlight":"flow-you","label":"You choose File › Export › PDF"},
+        {"highlight":"flow-app","label":"Driftwood renders your note with the current theme","packet":true,"from":"you","to":"app"},
+        {"highlight":"flow-dialog","label":"A save dialog asks where the PDF should go","packet":true,"from":"app","to":"dialog"},
+        {"highlight":"flow-disk","label":"The PDF is written to disk, and Finder / Explorer opens on it","packet":true,"from":"dialog","to":"disk"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-you"><div class="flow-actor-icon">🙂</div><span>You</span></div>
+          <div class="flow-actor" id="flow-app"><div class="flow-actor-icon">🪵</div><span>Driftwood</span></div>
+          <div class="flow-actor" id="flow-dialog"><div class="flow-actor-icon">🗂</div><span>Save dialog</span></div>
+          <div class="flow-actor" id="flow-disk"><div class="flow-actor-icon">💾</div><span>Your disk</span></div>
+        </div>
+        <div class="flow-step-label">Press Play or Next Step to begin</div>
+        <div class="flow-controls">
+          <button class="btn btn-primary flow-play-btn">▶ Play</button>
+          <button class="btn flow-next-btn">Next step</button>
+          <button class="btn btn-ghost flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">The panels, in their own words</h2>
+      <div class="chat-window" id="chat-2">
+        <div class="chat-header">#driftwood-window <span class="chat-members">3 members</span></div>
+        <div class="chat-messages">
+          <div class="chat-message me" data-sender="you"><div class="chat-avatar" style="background:var(--color-actor-1)">Y</div><div class="chat-bubble"><span class="chat-sender">You</span><p>Where did my shopping list go?</p></div></div>
+          <div class="chat-message" data-sender="side"><div class="chat-avatar" style="background:var(--color-actor-2)">S</div><div class="chat-bubble"><span class="chat-sender" style="color:var(--color-actor-2)">Sidebar</span><p>You're looking at Travel 2026. It's in Recipes — click that notebook.</p></div></div>
+          <div class="chat-message" data-sender="search"><div class="chat-avatar" style="background:var(--color-actor-3)">Q</div><div class="chat-bubble"><span class="chat-sender" style="color:var(--color-actor-3)">Quick search</span><p>Or skip the clicking: type "shopping" into me and I'll search every notebook at once.</p></div></div>
+        </div>
+        <div class="chat-typing" style="display:none"><div class="chat-avatar">?</div><div class="chat-typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>
+        <div class="chat-controls"><button class="btn btn-primary chat-next-btn">Next message</button><button class="btn chat-all-btn">Play all</button><button class="btn btn-ghost chat-reset-btn">Replay</button><span class="chat-progress"></span></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="try-it" id="tryit-first-note">
+        <div class="try-it-header"><span class="try-it-title">Try it in the app</span></div>
+        <ul>
+          <li><label><input type="checkbox"><span>Create a note called "Test drive"</span></label></li>
+          <li><label><input type="checkbox"><span>Add the tag <code>#sandbox</code></span></label></li>
+          <li><label><input type="checkbox"><span>Export it as a PDF to your desktop</span></label></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="dnd-container" id="dnd-2">
+        <p class="dnd-instructions">Drag each feature onto the job it does best — or tap a feature, then tap a job.</p>
+        <div class="dnd-chips">
+          <div class="dnd-chip" data-answer="tags">Tags</div>
+          <div class="dnd-chip" data-answer="notebooks">Notebooks</div>
+          <div class="dnd-chip" data-answer="search">Quick search</div>
+        </div>
+        <div class="dnd-zones">
+          <div class="dnd-zone" data-correct="notebooks"><p class="dnd-zone-label">Keep work and personal notes apart</p><div class="dnd-zone-target">Drop here</div></div>
+          <div class="dnd-zone" data-correct="tags"><p class="dnd-zone-label">Mark everything that still needs doing, across all projects</p><div class="dnd-zone-target">Drop here</div></div>
+          <div class="dnd-zone" data-correct="search"><p class="dnd-zone-label">Find the note that mentioned "sourdough"</p><div class="dnd-zone-target">Drop here</div></div>
+        </div>
+        <button class="btn btn-primary dnd-check-btn">Check matches</button>
+        <button class="btn btn-ghost dnd-reset-btn">Reset</button>
+      </div>
+    </section>
+  </div>
+</section>
+<section class="module" id="module-3">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">03</span><span class="module-meta">6 min</span>
+      <h1 class="module-title">Work faster, fix problems</h1>
+      <p class="module-subtitle">Shortcuts, settings worth changing, and what the error messages mean.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Five shortcuts that pay for themselves</h2>
+      <p>Keys adapt to your platform — try the switch in the top bar.</p>
+      <div class="shortcut-list">
+        <div class="shortcut"><span class="shortcut-desc">New note</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>N</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Quick search</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>K</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Toggle preview</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>E</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Move note to notebook</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd data-mac="⇧" data-win="Shift">Shift</kbd><kbd>M</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Settings</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>,</kbd></span></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Where your notes live</h2>
+      <div class="tabs" data-tab-group="platform">
+        <div class="tab-list">
+          <button class="tab" data-tab="mac">macOS</button>
+          <button class="tab" data-tab="win">Windows</button>
+          <button class="tab" data-tab="linux">Linux</button>
+        </div>
+        <div class="tab-panel"><p>By default: <code>~/Documents/Driftwood</code>. Reveal it with <span class="menu-path"><span>Driftwood</span><span>Show Library in Finder</span></span>.</p></div>
+        <div class="tab-panel"><p>By default: <code>%USERPROFILE%\Documents\Driftwood</code>. Reveal it with <span class="menu-path"><span>File</span><span>Show Library in Explorer</span></span>.</p></div>
+        <div class="tab-panel"><p>By default: <code>~/Driftwood</code>. Reveal it with <span class="menu-path"><span>File</span><span>Open Library Folder</span></span>.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Settings worth changing</h2>
+      <div class="setting-list">
+        <div class="setting-card"><span class="setting-name">Autosave delay</span><span class="setting-default">800 ms</span><span class="setting-where"><span class="menu-path"><span>Settings</span><span>Editor</span></span></span><p class="setting-effect">How long Driftwood waits after you stop typing before saving. <strong>Lower it</strong> if you're on a flaky laptop battery.</p></div>
+        <div class="setting-card"><span class="setting-name">Spellcheck language</span><span class="setting-default">system</span><span class="setting-where"><span class="menu-path"><span>Settings</span><span>Editor</span></span></span><p class="setting-effect">Follows your OS language unless set. <strong>Set it explicitly</strong> if you write in a second language.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">When something goes wrong</h2>
+      <div class="error-card">
+        <div class="error-message">Could not save "Trip packing list": EACCES permission denied</div>
+        <div class="error-body">
+          <div><h4>What it means</h4>Your computer refused to let Driftwood write to the library folder — usually because the folder was moved into a protected location.</div>
+          <div><h4>How to fix it</h4>Choose <span class="menu-path"><span>Settings</span><span>Library</span><span>Change…</span></span> and pick a folder inside your Documents.</div>
+        </div>
+      </div>
+      <div class="error-card is-warning">
+        <div class="error-message">This note was changed outside Driftwood. Reload?</div>
+        <div class="error-body">
+          <div><h4>What it means</h4>Another app (or a sync tool) edited the file while it was open here.</div>
+          <div><h4>How to fix it</h4>Click <strong>Reload</strong> to take the newer version. Your in-app edits are kept in <span class="menu-path"><span>Edit</span><span>Restore Previous</span></span>.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="bug-challenge">
+        <h3>Spot the mistake: Sam wants their notes on a new laptop</h3>
+        <div class="bug-code steps">
+          <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Installing the app is fine."><span class="line-num">1</span><code>Install Driftwood on the new laptop</code></div>
+          <div class="bug-line" onclick="checkBugLine(this, true)" data-explanation="Deleting the old folder before confirming the copy finished risks losing everything. Copy, open on the new machine, then clean up."><span class="line-num">2</span><code>Delete the library folder from the old laptop</code></div>
+          <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Copying the folder is exactly right."><span class="line-num">3</span><code>Copy the library folder to a USB stick</code></div>
+          <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Pointing Settings at the folder is correct."><span class="line-num">4</span><code>On the new laptop: Settings › Library › Change… and pick the copied folder</code></div>
+        </div>
+        <div class="bug-feedback"></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Power move: open a note from the command line</h2>
+      <div class="terminal">
+        <div class="code-header">Terminal</div>
+        <pre><span class="prompt">$ </span>driftwood open "Trip packing list"
+<span class="output">Opened in existing window.</span></pre>
+      </div>
+    </section>
+  </div>
+</section>
+<section class="module" id="module-4">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">04</span><span class="module-meta">reference</span>
+      <h1 class="module-title">Every feature, plus the developer kit</h1>
+      <p class="module-subtitle">A searchable feature map, then the elements used by library-mode courses.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Feature map</h2>
+      <div class="feature-map wide-block">
+        <div class="feature-map-controls">
+          <input class="feature-search" type="search" placeholder="Search features…" aria-label="Search features">
+          <button class="feature-filter" data-filter="all">All</button>
+          <button class="feature-filter" data-filter="write">Writing</button>
+          <button class="feature-filter" data-filter="organize">Organizing</button>
+          <button class="feature-filter" data-filter="share">Sharing</button>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-item" data-category="write"><span class="feature-name">Live preview</span><span class="feature-how"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd> <kbd>E</kbd></span></div>
+          <div class="feature-item" data-category="write" data-tags="table grid"><span class="feature-name">Insert table</span><span class="feature-how"><span class="menu-path"><span>Insert</span><span>Table</span></span></span></div>
+          <div class="feature-item" data-category="write" data-tags="focus zen"><span class="feature-name">Focus mode</span><span class="feature-how"><span class="menu-path"><span>View</span><span>Focus Mode</span></span></span></div>
+          <div class="feature-item" data-category="organize"><span class="feature-name">Tags</span><span class="feature-how">Type <code>#tag</code> in any note — <a href="#module-1">Module 1</a></span></div>
+          <div class="feature-item" data-category="organize" data-tags="pin star"><span class="feature-name">Favorites</span><span class="feature-how">Right-click a note › Add to Favorites</span></div>
+          <div class="feature-item" data-category="organize"><span class="feature-name">Move to notebook</span><span class="feature-how"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd> <kbd data-mac="⇧" data-win="Shift">Shift</kbd> <kbd>M</kbd></span></div>
+          <div class="feature-item" data-category="share" data-tags="pdf print"><span class="feature-name">Export as PDF</span><span class="feature-how"><span class="menu-path"><span>File</span><span>Export</span><span>PDF…</span></span></span></div>
+          <div class="feature-item" data-category="share" data-tags="html web"><span class="feature-name">Export as HTML</span><span class="feature-how"><span class="menu-path"><span>File</span><span>Export</span><span>HTML…</span></span></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Library mode: code ↔ English</h2>
+      <div class="translation-block">
+        <div class="translation-code">
+          <span class="translation-label">Code</span><span class="translation-file">examples/export.ts</span>
+          <pre><code><span class="code-line"><span class="code-keyword">const</span> doc = <span class="code-keyword">await</span> driftwood.<span class="code-function">open</span>(<span class="code-string">"notes/trip.md"</span>);</span>
+<span class="code-line hl"><span class="code-keyword">const</span> pdf = <span class="code-keyword">await</span> doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>, { <span class="code-property">theme</span>: <span class="code-string">"paper"</span> });</span>
+<span class="code-line"><span class="code-keyword">await</span> fs.<span class="code-function">writeFile</span>(<span class="code-string">"trip.pdf"</span>, pdf);</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">Plain English</span>
+          <div class="translation-lines">
+            <p class="tl">Load a note from disk and wait until it's ready.</p>
+            <p class="tl">Render it to PDF using the "paper" theme — the same one the app uses.</p>
+            <p class="tl">Save the resulting bytes as a file.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="api-card">
+        <div class="api-signature"><span class="api-kind">method</span>doc.export(format: "pdf" | "html", options?: ExportOptions): Promise&lt;Uint8Array&gt;</div>
+        <div class="api-body">
+          <p class="api-summary">Renders the document in the requested format. Throws <code>ExportError</code> if the note contains an image that can't be read.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>format</td><td>Output type. Only these two values are accepted.</td></tr>
+              <tr><td>options.theme<span class="optional">optional</span></td><td>Theme name. Defaults to <code>"paper"</code>.</td></tr>
+            </tbody>
+          </table>
+          <p class="api-returns"><strong>Returns</strong>The file contents as bytes.</p>
+        </div>
+      </div>
+
+      <div class="compare">
+        <div class="compare-col dont"><div class="compare-label">Don't</div>
+          <div class="code-block"><pre><code>doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>);  <span class="code-comment">// forgot await</span></code></pre></div>
+          <p>You get a Promise, not the bytes — the file will be empty.</p></div>
+        <div class="compare-col do"><div class="compare-label">Do</div>
+          <div class="code-block"><pre><code><span class="code-keyword">await</span> doc.<span class="code-function">export</span>(<span class="code-string">"pdf"</span>);</code></pre></div>
+          <p>Wait for the render to finish before using the result.</p></div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-file">src/config/defaults.ts</span><span class="code-lang">ts</span></div>
+        <pre><code><span class="code-keyword">export const</span> <span class="code-property">AUTOSAVE_MS</span> = <span class="code-number">800</span>;
+<span class="code-keyword">export const</span> <span class="code-property">MAX_ATTACHMENT_MB</span> = <span class="code-number">25</span>;</code></pre>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Other building blocks</h2>
+      <div class="arch-diagram">
+        <div class="arch-zone"><div class="arch-zone-label">Inside the app window</div>
+          <div class="arch-component" data-desc="Renders everything you see — built with web technology inside Electron."><div class="arch-icon">🖼</div><span>Interface</span></div>
+          <div class="arch-component" data-desc="Watches the library folder and reloads notes changed by other apps."><div class="arch-icon">👀</div><span>File watcher</span></div>
+        </div>
+        <div class="arch-zone"><div class="arch-zone-label">On your computer</div>
+          <div class="arch-component" data-desc="Plain .md files — the only copy of your notes."><div class="arch-icon">📁</div><span>Library folder</span></div>
+        </div>
+        <div class="arch-description">Click any component to learn what it does.</div>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="flow-step-num">1</div><p>Type</p></div><div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">2</div><p>Pause 0.8s</p></div><div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">3</div><p>Saved to disk</p></div>
+      </div>
+      <div class="icon-rows">
+        <div class="icon-row"><div class="icon-circle">🍎</div><div><strong>macOS 12+</strong><p>Apple silicon and Intel</p></div></div>
+        <div class="icon-row"><div class="icon-circle">🪟</div><div><strong>Windows 10+</strong><p>Installer or portable .zip</p></div></div>
+      </div>
+      <div class="file-tree">
+        <div class="ft-folder"><span class="ft-name">Driftwood/</span><span class="ft-desc">Your library</span>
+          <div class="ft-children">
+            <div class="ft-folder"><span class="ft-name">Travel 2026/</span><span class="ft-desc">A notebook is just a folder</span></div>
+            <div class="ft-file"><span class="ft-name">Book ideas.md</span><span class="ft-desc">A note is just a file</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="badge-list">
+        <div class="badge-item"><code class="badge-code">--safe-mode</code><span class="badge-desc">Starts without plugins — use when the app crashes on launch</span></div>
+      </div>
+      <div class="callout callout-caution"><div class="callout-icon">⚠️</div><div class="callout-content"><strong class="callout-title">Heads up</strong><p>Emptying the Trash is permanent — the files are deleted from disk.</p></div></div>
+      <div class="callout callout-tip"><div class="callout-icon">✅</div><div class="callout-content"><strong class="callout-title">Pro tip</strong><p>Pin your most-used notebook with a right-click.</p></div></div>
+    </section>
+  </div>
+</section>
+  </main>
+
+</body>
+</html>

@@ -1,92 +1,90 @@
-# Codebase to Course
+# Project to Course
 
-A Claude Code skill that turns any codebase into a beautiful, interactive single-page HTML course.
+A Claude Code skill that turns a project repository into a beautiful, interactive HTML course **for the people who use it**.
 
-Point it at a repo. Get back a stunning, self-contained course that teaches how the code works — with scroll-based navigation, animated visualizations, embedded quizzes, and code-with-plain-English side-by-side translations.
+- **Apps** (Electron, Wails, Tauri, web, CLI) → an **end-user course**: how to use the app and get the most out of every feature, with real screenshots, guided UI tours, platform-aware keyboard shortcuts, settings, troubleshooting, and a searchable feature map.
+- **Libraries, SDKs and developer tools** → a **developer-onboarding course**: the mental model, the public API, idiomatic usage, configuration, errors, and pitfalls — built from real examples and tests.
+- **Any codebase, on request** → the original **"how the code works"** course for non-technical builders.
 
-## Who is this for?
+<img width="720" alt="Course cover and sidebar, light mode" src="docs/preview-light.png" />
+<img width="720" alt="UI tour with hotspots, dark mode" src="docs/preview-dark.png" />
 
-**"Vibe coders"** — people who build software by instructing AI coding tools in natural language, without a traditional CS education.
+## Why build a course from the code?
 
-You've built something (or found something cool on GitHub). It works. But you don't really understand *how* it works under the hood. This skill generates a course that teaches you — not by lecturing, but by tracing what happens when you actually use the app.
-
-**Your goals are practical, not academic:**
-- Steer AI coding tools better (make smarter architectural decisions)
-- Detect when AI is wrong (spot hallucinations, catch bad patterns)
-- Debug when AI gets stuck (break out of bug loops)
-- Talk to engineers without feeling lost
-
-You're not trying to become a software engineer. You want coding as a superpower.
+Because the code is the most accurate manual that exists. It knows the exact menu labels, the real defaults and limits, every error message, and the shortcuts nobody documented. The skill reads it, then teaches in the learner's language — tasks and workflows for users, APIs and patterns for developers.
 
 ## What the course looks like
 
-The output is a **single HTML file** — no dependencies, no setup, works offline. It includes:
+The output is a small **directory** (`index.html` + CSS/JS + screenshots) that opens in any browser, works offline except for Google Fonts, and needs no build tools to view.
 
-- **Scroll-based modules** with progress tracking and keyboard navigation
-- **Code ↔ Plain English translations** — real code on the left, what it means on the right
-<img width="720" alt="Code translation block" src="https://github.com/user-attachments/assets/fb9e7fac-05c1-4f98-b80c-46543ef81afc" />
+**Shell**
+- Sidebar table of contents with per-module completion ✓, reading progress, "Up next" cards
+- Light and dark mode (follows the OS, with a toggle), print-friendly, keyboard navigation (`N` / `P`)
+- Fully responsive; respects reduced-motion settings
 
-- **Animated visualizations** — data flow animations, group chat between components, architecture diagrams
-<img width="720" alt="Animated data flow" src="https://github.com/user-attachments/assets/20fb403e-7dfd-4a47-989b-bbae86ca8041" />
+**End-user elements**
+- **UI tours** — real screenshots with numbered hotspots, highlight regions and a step-through panel
+- **Platform-aware shortcuts** — `⌘` on macOS, `Ctrl` on Windows/Linux, switchable from the top bar
+- **Menu paths**, **action ↔ result** blocks, **setting cards** with real defaults, **error explainers**
+- **Try-it checklists** that remember progress, and a **searchable feature map** of everything the app can do
 
-- **Interactive quizzes** that test *application* not memorization ("You want to add favorites — which files change?")
-<img width="720" alt="Interactive quiz" src="https://github.com/user-attachments/assets/57706496-9fa8-457a-8450-3da22789951c" />
+**Developer elements**
+- **Code ↔ English** translations, **API cards** with parameter tables, **do / don't** comparisons, language tabs that stay in sync
 
-- **Glossary tooltips** — hover any technical term for a plain-English definition
-<img width="720" alt="Glossary tooltip" src="https://github.com/user-attachments/assets/ac2f160a-d73f-4779-97b2-a06fdb5f3227" />
+**Shared**
+- Scenario quizzes that test *doing*, not remembering · group-chat and step-by-step flow animations · drag-and-drop matching · glossary tooltips · copyable code and terminal blocks
 
-  
-- **Warm, distinctive design** — not the typical purple-gradient AI look
+Open [`examples/component-gallery/index.html`](examples/component-gallery/index.html) to see every element in a sample course.
 
 ## How to use
 
-### As a Claude Code skill
+### Install as a Claude Code skill
 
-1. Copy the `codebase-to-course` folder into `~/.claude/skills/`
-2. Open any project in Claude Code
-3. Say: *"Turn this codebase into an interactive course"*
+```bash
+git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/project-to-course
+```
 
-### Trigger phrases
+Then, in Claude Code inside any project:
 
-- "Turn this into a course"
-- "Explain this codebase interactively"
-- "Make a course from this project"
-- "Teach me how this code works"
-- "Interactive tutorial from this code"
+- *"Make a course for the users of this app"*
+- *"Turn this library into an onboarding course for developers"*
+- *"Create a user training course from https://github.com/owner/repo"*
+- *"Explain this codebase interactively"* (internals mode)
+
+Claude picks the mode from the project (you can also name it), analyzes the code, captures screenshots when it can run the app, and builds the course.
+
+### Screenshots for desktop apps
+
+For **Electron** apps Claude launches the app with Playwright; for **Wails** (and other web-based UIs) it uses the dev server (`wails dev` → `http://localhost:34115`). Either way `references/capture.cjs` takes the screenshots and computes hotspot positions from the real element positions. If the app can't run in Claude's environment, the course uses clearly labeled illustrations, and you can drop real screenshots into `course/screenshots/` and re-run `build.sh`. Details: [`references/screenshots.md`](references/screenshots.md).
 
 ## Design philosophy
 
-### Build first, understand later
-
-This inverts traditional CS education. The old way: memorize concepts for years → eventually build something → finally see the point (most people quit before step 3). This way: **build something → experience it working → now understand how it works.**
-
-### Show, don't tell
-
-Every screen is at least 50% visual. Max 2-3 sentences per text block. If something can be a diagram, animation, or interactive element — it shouldn't be a paragraph.
-
-### Quizzes test doing, not knowing
-
-No "What does API stand for?" Instead: "A user reports stale data after switching pages. Where would you look first?" Quizzes test whether you can *use* what you learned to solve a new problem.
-
-### No recycled metaphors
-
-Each concept gets a metaphor that fits *that specific idea*. A database is a library with a card catalog. Auth is a bouncer checking IDs. API rate limiting is a nightclub with a capacity limit. Never the same metaphor twice.
-
-### Original code only
-
-Code snippets are exact copies from the real codebase — never modified or simplified. The learner should be able to open the actual file and see the same code they learned from.
+- **Teach jobs, not menus.** Modules follow what learners are trying to get done; exhaustive coverage lives in the feature map.
+- **Accuracy is the product.** Labels, shortcuts, defaults, messages and code are copied exactly from the source.
+- **Show, don't tell.** Every screen is at least half visual; max 2–3 sentences per text block.
+- **Quizzes test doing.** "Sam needs to send just the #q3 notes as one PDF — fastest route?", not "Which menu is Export in?"
+- **Fresh metaphors.** Each concept gets its own — never "restaurant".
 
 ## Skill structure
 
 ```
-codebase-to-course/
-├── SKILL.md                          # Main skill instructions
-└── references/
-    ├── design-system.md              # CSS tokens, typography, colors, layout
-    └── interactive-elements.md       # Quiz, animation, and visualization patterns
+SKILL.md                         # Main instructions: mode selection, phases, build steps
+references/
+├── audience-end-user.md         # End-user mode: what to extract, module arc, required elements
+├── audience-library.md          # Library mode
+├── audience-internals.md        # Internals ("how the code works") mode
+├── screenshots.md               # Getting screenshots of Electron / Wails / web apps
+├── capture.cjs                  # Playwright capture + hotspot coordinate script
+├── content-philosophy.md        # Accuracy, visual density, metaphors, tooltips, quizzes
+├── interactive-elements.md      # HTML patterns for every element
+├── design-system.md             # Tokens, typography, theming, layout
+├── gotchas.md                   # Review checklist
+├── module-brief-template.md     # Briefs for parallel module writing
+├── styles.css · main.js         # Pre-built design system + engines (copied verbatim)
+└── _base.html · _footer.html · build.sh
+examples/component-gallery/      # Sample course showing every element (bash preview.sh to rebuild)
 ```
-
 
 ---
 
-Built by [Zara](https://x.com/zarazhangrui) with Claude Code.
+Forked from the original codebase-to-course skill by [Zara](https://x.com/zarazhangrui), built with Claude Code.

@@ -1,0 +1,83 @@
+<section class="module" id="module-3">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">03</span><span class="module-meta">6 min</span>
+      <h1 class="module-title">Work faster, fix problems</h1>
+      <p class="module-subtitle">Shortcuts, settings worth changing, and what the error messages mean.</p>
+    </header>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Five shortcuts that pay for themselves</h2>
+      <p>Keys adapt to your platform — try the switch in the top bar.</p>
+      <div class="shortcut-list">
+        <div class="shortcut"><span class="shortcut-desc">New note</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>N</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Quick search</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>K</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Toggle preview</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>E</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Move note to notebook</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd data-mac="⇧" data-win="Shift">Shift</kbd><kbd>M</kbd></span></div>
+        <div class="shortcut"><span class="shortcut-desc">Settings</span><span class="keys"><kbd data-mac="⌘" data-win="Ctrl">Ctrl</kbd><kbd>,</kbd></span></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Where your notes live</h2>
+      <div class="tabs" data-tab-group="platform">
+        <div class="tab-list">
+          <button class="tab" data-tab="mac">macOS</button>
+          <button class="tab" data-tab="win">Windows</button>
+          <button class="tab" data-tab="linux">Linux</button>
+        </div>
+        <div class="tab-panel"><p>By default: <code>~/Documents/Driftwood</code>. Reveal it with <span class="menu-path"><span>Driftwood</span><span>Show Library in Finder</span></span>.</p></div>
+        <div class="tab-panel"><p>By default: <code>%USERPROFILE%\Documents\Driftwood</code>. Reveal it with <span class="menu-path"><span>File</span><span>Show Library in Explorer</span></span>.</p></div>
+        <div class="tab-panel"><p>By default: <code>~/Driftwood</code>. Reveal it with <span class="menu-path"><span>File</span><span>Open Library Folder</span></span>.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Settings worth changing</h2>
+      <div class="setting-list">
+        <div class="setting-card"><span class="setting-name">Autosave delay</span><span class="setting-default">800 ms</span><span class="setting-where"><span class="menu-path"><span>Settings</span><span>Editor</span></span></span><p class="setting-effect">How long Driftwood waits after you stop typing before saving. <strong>Lower it</strong> if you're on a flaky laptop battery.</p></div>
+        <div class="setting-card"><span class="setting-name">Spellcheck language</span><span class="setting-default">system</span><span class="setting-where"><span class="menu-path"><span>Settings</span><span>Editor</span></span></span><p class="setting-effect">Follows your OS language unless set. <strong>Set it explicitly</strong> if you write in a second language.</p></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">When something goes wrong</h2>
+      <div class="error-card">
+        <div class="error-message">Could not save "Trip packing list": EACCES permission denied</div>
+        <div class="error-body">
+          <div><h4>What it means</h4>Your computer refused to let Driftwood write to the library folder — usually because the folder was moved into a protected location.</div>
+          <div><h4>How to fix it</h4>Choose <span class="menu-path"><span>Settings</span><span>Library</span><span>Change…</span></span> and pick a folder inside your Documents.</div>
+        </div>
+      </div>
+      <div class="error-card is-warning">
+        <div class="error-message">This note was changed outside Driftwood. Reload?</div>
+        <div class="error-body">
+          <div><h4>What it means</h4>Another app (or a sync tool) edited the file while it was open here.</div>
+          <div><h4>How to fix it</h4>Click <strong>Reload</strong> to take the newer version. Your in-app edits are kept in <span class="menu-path"><span>Edit</span><span>Restore Previous</span></span>.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <div class="bug-challenge">
+        <h3>Spot the mistake: Sam wants their notes on a new laptop</h3>
+        <div class="bug-code steps">
+          <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Installing the app is fine."><span class="line-num">1</span><code>Install Driftwood on the new laptop</code></div>
+          <div class="bug-line" onclick="checkBugLine(this, true)" data-explanation="Deleting the old folder before confirming the copy finished risks losing everything. Copy, open on the new machine, then clean up."><span class="line-num">2</span><code>Delete the library folder from the old laptop</code></div>
+          <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Copying the folder is exactly right."><span class="line-num">3</span><code>Copy the library folder to a USB stick</code></div>
+          <div class="bug-line" onclick="checkBugLine(this, false)" data-hint="Pointing Settings at the folder is correct."><span class="line-num">4</span><code>On the new laptop: Settings › Library › Change… and pick the copied folder</code></div>
+        </div>
+        <div class="bug-feedback"></div>
+      </div>
+    </section>
+
+    <section class="screen animate-in">
+      <h2 class="screen-heading">Power move: open a note from the command line</h2>
+      <div class="terminal">
+        <div class="code-header">Terminal</div>
+        <pre><span class="prompt">$ </span>driftwood open "Trip packing list"
+<span class="output">Opened in existing window.</span></pre>
+      </div>
+    </section>
+  </div>
+</section>
