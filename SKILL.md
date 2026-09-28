@@ -72,7 +72,7 @@ Use the module arc from the mode's reference file. General rules for all modes:
 
 **Choose a build path:**
 - **Simple project** (≤5 modules, one main workflow) → Phase 3 Sequential.
-- **Complex project** (6+ modules, many features or services) → Phase 2.5 then Phase 3 Parallel.
+- **Complex project** (6+ modules, many features or services) → Phase 2.5 then Phase 3 Parallel — or Phase 3 Sequential from the briefs if you can't run subagents.
 
 ### Phase 2.5: Module Briefs (complex projects only)
 
@@ -101,7 +101,7 @@ course-name/
   index.html        ← assembled by build.sh / build.ps1 — never write by hand
 ```
 
-**Step 1 — Setup.** Create the directory and copy these verbatim (use `cp`, or Read + Write; never retype them): `references/styles.css`, `references/main.js`, `references/_footer.html`, `references/build.sh`, `references/build.ps1`.
+**Step 1 — Setup.** Create the directory and copy these verbatim (use `cp` / `Copy-Item` or your file tools; never retype them): `references/styles.css`, `references/main.js`, `references/_footer.html`, `references/build.sh`, `references/build.ps1`.
 
 **Step 2 — Customize `_base.html`.** Copy `references/_base.html` to `course-name/_base.html` with exactly two substitutions:
 - Both `COURSE_TITLE` → the course title (e.g. "Getting the most out of Driftwood")
@@ -130,7 +130,7 @@ The sidebar table of contents, progress, dark mode, platform switch and "up next
 Write `modules/00-cover.html` with a `.course-hero` (see the Course Hero pattern). Use HTML patterns from `references/interactive-elements.md` — read only the sections you need. Follow `references/design-system.md` for visual conventions.
 
 - **Sequential path:** read `references/content-philosophy.md` and `references/gotchas.md`, then write modules one at a time.
-- **Parallel path:** dispatch modules to subagents in batches of up to 3. Each receives its brief, `content-philosophy.md`, `gotchas.md`, and only the listed sections of `interactive-elements.md`. Afterwards, check consistency in the main context (terminology, tone, transitions, accent usage).
+- **Parallel path** (only if your environment can spawn subagents; otherwise use the sequential path, writing each module from its brief): dispatch modules to subagents in batches of up to 3. Each receives its brief, `content-philosophy.md`, `gotchas.md`, and only the listed sections of `interactive-elements.md`. Afterwards, check consistency in the main context (terminology, tone, transitions, accent usage).
 
 **Step 4 — Assemble.** `cd course-name && bash build.sh` → produces `index.html`. Where Bash isn't available (native Windows), run `powershell -NoProfile -ExecutionPolicy Bypass -File course-name\build.ps1` instead — it produces the identical file.
 
