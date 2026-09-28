@@ -1,6 +1,6 @@
 # Code to Course
 
-A Claude Code skill that turns a project repository into a beautiful, interactive HTML course **for the people who use it**.
+An agent skill that turns a project repository into a beautiful, interactive HTML course **for the people who use it**. Works with **Claude Code** and **OpenAI Codex** — and any other agent that supports the shared `SKILL.md` skills format.
 
 - **Apps** (Electron, Wails, Tauri, web, CLI) → an **end-user course**: how to use the app and get the most out of every feature, with real screenshots, guided UI tours, platform-aware keyboard shortcuts, settings, troubleshooting, and a searchable feature map.
 - **Libraries, SDKs and developer tools** → a **developer-onboarding course**: the mental model, the public API, idiomatic usage, configuration, errors, and pitfalls — built from real examples and tests.
@@ -15,28 +15,43 @@ Because the code is the most accurate manual that exists. It knows the exact men
 
 ## Quick start
 
-**1. Install** — clone into your Claude Code skills folder (the folder, repo and skill are all named `code-to-course`):
+**1. Install** — clone into your agent's skills folder (the folder, repo and skill are all named `code-to-course`):
 
 ```bash
+# Claude Code
 git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/code-to-course
+
+# OpenAI Codex
+git clone https://github.com/rgehrsitz/code-to-course ~/.agents/skills/code-to-course
+
+# Both — one copy, shared through a symlink
+git clone https://github.com/rgehrsitz/code-to-course ~/.agents/skills/code-to-course
+mkdir -p ~/.claude/skills && ln -s ~/.agents/skills/code-to-course ~/.claude/skills/code-to-course
 ```
 
-**2. Use** — open any project in Claude Code and ask:
+Codex also reads `~/.codex/skills/`, and both agents pick up skills committed inside a repo (`.claude/skills/` for Claude Code, `.agents/skills/` for Codex). If Codex doesn't list the skill right away, restart it. On Windows, share one copy with a directory junction instead of `ln -s`:
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+New-Item -ItemType Junction -Path "$HOME\.claude\skills\code-to-course" -Target "$HOME\.agents\skills\code-to-course"
+```
+
+**2. Use** — open any project in your agent and ask:
 
 - *"Make a course for the users of this app"*
 - *"Turn this library into an onboarding course for developers"*
 - *"Create a user training course from https://github.com/owner/repo"*
 - *"Explain this codebase interactively"* (internals mode)
 
-Claude picks the mode from the project (or you can name it), analyzes the code, captures screenshots when it can run the app, and writes the course to a new folder. Open its `index.html` in any browser.
+The agent picks the mode from the project (or you can name it), analyzes the code, captures screenshots when it can run the app, and writes the course to a new folder. Open its `index.html` in any browser.
 
-**3. Update** — `git -C ~/.claude/skills/code-to-course pull`
+**3. Update** — `git pull` in the folder you cloned into, e.g. `git -C ~/.agents/skills/code-to-course pull`.
 
-> **Tip:** if you also have the original, similarly named `codebase-to-course` skill installed, both respond to phrases like "make a course". Say *"use code-to-course"* to pick this one, or uninstall the other.
+> **Tip (Claude Code):** if you also have the original, similarly named `codebase-to-course` skill installed, both respond to phrases like "make a course". Say *"use code-to-course"* to pick this one, or uninstall the other.
 
 ### Requirements
 
-- **Claude Code** plus **Bash** or **PowerShell** — to assemble the course (`build.sh`, or `build.ps1` on native Windows; Claude picks whichever is available). Viewing a finished course needs only a browser.
+- **Claude Code or Codex** plus **Bash** or **PowerShell** — to assemble the course (`build.sh`, or `build.ps1` on native Windows; the agent picks whichever is available). Viewing a finished course needs only a browser.
 - **Node 18+ and Playwright** — only for automatic screenshots of your app (`npm i -D playwright` in the app repo). Without them, the course uses clearly labeled illustrations instead.
 - Courses load fonts from Google Fonts. Offline they fall back to system fonts and everything else still works.
 
@@ -63,20 +78,20 @@ The output is a small **directory** (`index.html` + CSS/JS + screenshots) that o
 
 ### See every element
 
-[`examples/component-gallery/`](examples/component-gallery/) is a sample course for a fictional notes app that uses every element. GitHub shows HTML as source, so open it locally:
+[`examples/component-gallery/`](examples/component-gallery/) is a sample course for a fictional notes app that uses every element. GitHub shows HTML as source, so open it locally — from the folder you cloned into:
 
 ```bash
-open ~/.claude/skills/code-to-course/examples/component-gallery/index.html      # macOS
-xdg-open ~/.claude/skills/code-to-course/examples/component-gallery/index.html  # Linux
+open examples/component-gallery/index.html      # macOS
+xdg-open examples/component-gallery/index.html  # Linux
 ```
 
 ```powershell
-Start-Process "$HOME\.claude\skills\code-to-course\examples\component-gallery\index.html"  # Windows (PowerShell)
+Invoke-Item .\examples\component-gallery\index.html  # Windows (PowerShell)
 ```
 
 ## Screenshots for desktop apps
 
-Real screenshots make end-user courses much better. Claude tries, in order:
+Real screenshots make end-user courses much better. The agent tries, in order:
 
 1. **Screenshots you already have** — a folder you point it to, or images in the repo (`docs/`, `screenshots/`, README images).
 2. **Capturing them itself** with [`references/capture.cjs`](references/capture.cjs):
@@ -85,12 +100,12 @@ Real screenshots make end-user courses much better. Claude tries, in order:
    - **Tauri / web UIs** — the frontend dev server, with native bridges stubbed.
 3. **Illustrations** — clearly labeled HTML mock-ups, when the app can't run.
 
-The capture script also computes hotspot positions from real element positions, so tour markers land exactly on the controls they describe. To update a screenshot later, overwrite the PNG with the same name in the course's `screenshots/` folder; no rebuild is needed. To turn an illustration into a real screenshot, give Claude the image and ask it to swap it in (it edits that module and rebuilds). Full guide: [`references/screenshots.md`](references/screenshots.md).
+The capture script also computes hotspot positions from real element positions, so tour markers land exactly on the controls they describe. To update a screenshot later, overwrite the PNG with the same name in the course's `screenshots/` folder; no rebuild is needed. To turn an illustration into a real screenshot, give your agent the image and ask it to swap it in (it edits that module and rebuilds). Full guide: [`references/screenshots.md`](references/screenshots.md).
 
 You can also run the capture script yourself — describe the shots in a JSON file, then:
 
 ```bash
-node ~/.claude/skills/code-to-course/references/capture.cjs shots.json
+node <skill-folder>/references/capture.cjs shots.json   # e.g. ~/.agents/skills/code-to-course
 ```
 
 It writes the PNGs plus `hotspots.json` (ready-to-paste hotspot markup), and exits non-zero if any shot or hotspot failed. The file format is documented at the top of `capture.cjs`.
