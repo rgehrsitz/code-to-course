@@ -13,14 +13,41 @@ A Claude Code skill that turns a project repository into a beautiful, interactiv
 
 Because the code is the most accurate manual that exists. It knows the exact menu labels, the real defaults and limits, every error message, and the shortcuts nobody documented. The skill reads it, then teaches in the learner's language — tasks and workflows for users, APIs and patterns for developers.
 
+## Quick start
+
+**1. Install** — clone into your Claude Code skills folder. The folder name should match the skill name, `project-to-course`:
+
+```bash
+git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/project-to-course
+```
+
+**2. Use** — open any project in Claude Code and ask:
+
+- *"Make a course for the users of this app"*
+- *"Turn this library into an onboarding course for developers"*
+- *"Create a user training course from https://github.com/owner/repo"*
+- *"Explain this codebase interactively"* (internals mode)
+
+Claude picks the mode from the project (or you can name it), analyzes the code, captures screenshots when it can run the app, and writes the course to a new folder. Open its `index.html` in any browser.
+
+**3. Update** — `git -C ~/.claude/skills/project-to-course pull`
+
+> **Tip:** if you also have the original `codebase-to-course` skill installed, both respond to phrases like "make a course". Say *"use project-to-course"* to pick this one, or uninstall the other.
+
+### Requirements
+
+- **Claude Code** — nothing else is needed to generate and view courses.
+- **Node 18+ and Playwright** — only for automatic screenshots of your app (`npm i -D playwright` in the app repo). Without them, the course uses clearly labeled illustrations instead.
+- Courses load fonts from Google Fonts. Offline they fall back to system fonts and everything else still works.
+
 ## What the course looks like
 
-The output is a small **directory** (`index.html` + CSS/JS + screenshots) that opens in any browser, works offline except for Google Fonts, and needs no build tools to view.
+The output is a small **directory** (`index.html` + CSS/JS + screenshots) that opens in any browser and needs no build tools or server.
 
 **Shell**
 - Sidebar table of contents with per-module completion ✓, reading progress, "Up next" cards
 - Light and dark mode (follows the OS, with a toggle), print-friendly, keyboard navigation (`N` / `P`)
-- Fully responsive; respects reduced-motion settings
+- Fully responsive; respects reduced-motion settings; keyboard-accessible interactions
 
 **End-user elements**
 - **UI tours** — real screenshots with numbered hotspots, highlight regions and a step-through panel
@@ -34,28 +61,36 @@ The output is a small **directory** (`index.html` + CSS/JS + screenshots) that o
 **Shared**
 - Scenario quizzes that test *doing*, not remembering · group-chat and step-by-step flow animations · drag-and-drop matching · glossary tooltips · copyable code and terminal blocks
 
-Open [`examples/component-gallery/index.html`](examples/component-gallery/index.html) to see every element in a sample course.
+### See every element
 
-## How to use
-
-### Install as a Claude Code skill
+[`examples/component-gallery/`](examples/component-gallery/) is a sample course for a fictional notes app that uses every element. GitHub shows HTML as source, so open it locally:
 
 ```bash
-git clone https://github.com/rgehrsitz/code-to-course ~/.claude/skills/project-to-course
+open ~/.claude/skills/project-to-course/examples/component-gallery/index.html      # macOS
+xdg-open ~/.claude/skills/project-to-course/examples/component-gallery/index.html  # Linux
+start %USERPROFILE%\.claude\skills\project-to-course\examples\component-gallery\index.html  # Windows
 ```
 
-Then, in Claude Code inside any project:
+## Screenshots for desktop apps
 
-- *"Make a course for the users of this app"*
-- *"Turn this library into an onboarding course for developers"*
-- *"Create a user training course from https://github.com/owner/repo"*
-- *"Explain this codebase interactively"* (internals mode)
+Real screenshots make end-user courses much better. Claude tries, in order:
 
-Claude picks the mode from the project (you can also name it), analyzes the code, captures screenshots when it can run the app, and builds the course.
+1. **Screenshots you already have** — a folder you point it to, or images in the repo (`docs/`, `screenshots/`, README images).
+2. **Capturing them itself** with [`references/capture.cjs`](references/capture.cjs):
+   - **Electron** — launches the app with Playwright, using the app's own Electron binary.
+   - **Wails** — uses the dev server (`wails dev` → `http://localhost:34115`), where Go bindings still work. If the Go side can't build, it runs just the frontend and stubs the bindings with sample data.
+   - **Tauri / web UIs** — the frontend dev server, with native bridges stubbed.
+3. **Illustrations** — clearly labeled HTML mock-ups, when the app can't run.
 
-### Screenshots for desktop apps
+The capture script also computes hotspot positions from real element positions, so tour markers land exactly on the controls they describe. To replace illustrations later, drop PNGs into the course's `screenshots/` folder and run `bash build.sh` in the course folder. Full guide: [`references/screenshots.md`](references/screenshots.md).
 
-For **Electron** apps Claude launches the app with Playwright; for **Wails** (and other web-based UIs) it uses the dev server (`wails dev` → `http://localhost:34115`). Either way `references/capture.cjs` takes the screenshots and computes hotspot positions from the real element positions. If the app can't run in Claude's environment, the course uses clearly labeled illustrations, and you can drop real screenshots into `course/screenshots/` and re-run `build.sh`. Details: [`references/screenshots.md`](references/screenshots.md).
+You can also run the capture script yourself — describe the shots in a JSON file, then:
+
+```bash
+node ~/.claude/skills/project-to-course/references/capture.cjs shots.json
+```
+
+It writes the PNGs plus `hotspots.json` (ready-to-paste hotspot markup), and exits non-zero if any shot or hotspot failed. The file format is documented at the top of `capture.cjs`.
 
 ## Design philosophy
 
@@ -64,6 +99,12 @@ For **Electron** apps Claude launches the app with Playwright; for **Wails** (an
 - **Show, don't tell.** Every screen is at least half visual; max 2–3 sentences per text block.
 - **Quizzes test doing.** "Sam needs to send just the #q3 notes as one PDF — fastest route?", not "Which menu is Export in?"
 - **Fresh metaphors.** Each concept gets its own — never "restaurant".
+
+## Customizing
+
+- **Accent color** — each course sets one color in its `_base.html`; every other shade is derived from it, in light and dark mode.
+- **Design system** — edit `references/styles.css` and `references/main.js`, then run `bash preview.sh` in `examples/component-gallery/` to see the result. New courses pick up the changes automatically.
+- **Teaching style** — the audience files (`references/audience-*.md`) and `references/content-philosophy.md` control what each mode extracts and how it teaches.
 
 ## Skill structure
 
@@ -83,8 +124,9 @@ references/
 ├── styles.css · main.js         # Pre-built design system + engines (copied verbatim)
 └── _base.html · _footer.html · build.sh
 examples/component-gallery/      # Sample course showing every element (bash preview.sh to rebuild)
+docs/                            # README preview images
 ```
 
----
+## Credits
 
-Forked from the original codebase-to-course skill by [Zara](https://x.com/zarazhangrui), built with Claude Code.
+Forked from the original [codebase-to-course](https://x.com/zarazhangrui) skill by Zara, which teaches how a codebase works to non-technical builders — still available here as internals mode. This fork adds the end-user and library modes, screenshot capture, and a redesigned course kit. Built with Claude Code.
