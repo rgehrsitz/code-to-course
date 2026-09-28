@@ -91,16 +91,17 @@ course-name/
   _base.html        ← customized shell (title + accent color)
   _footer.html      ← copied verbatim from references/_footer.html
   build.sh          ← copied verbatim from references/build.sh
+  build.ps1         ← copied verbatim from references/build.ps1 (Windows)
   screenshots/      ← PNGs (end-user mode), referenced as screenshots/NN-name.png
   briefs/           ← complex projects only; delete after build
   modules/
     00-cover.html   ← course hero (recommended)
     01-slug.html
     ...
-  index.html        ← assembled by build.sh — never write by hand
+  index.html        ← assembled by build.sh / build.ps1 — never write by hand
 ```
 
-**Step 1 — Setup.** Create the directory and copy these verbatim (use `cp`, or Read + Write; never retype them): `references/styles.css`, `references/main.js`, `references/_footer.html`, `references/build.sh`.
+**Step 1 — Setup.** Create the directory and copy these verbatim (use `cp`, or Read + Write; never retype them): `references/styles.css`, `references/main.js`, `references/_footer.html`, `references/build.sh`, `references/build.ps1`.
 
 **Step 2 — Customize `_base.html`.** Copy `references/_base.html` to `course-name/_base.html` with exactly two substitutions:
 - Both `COURSE_TITLE` → the course title (e.g. "Getting the most out of Driftwood")
@@ -131,7 +132,7 @@ Write `modules/00-cover.html` with a `.course-hero` (see the Course Hero pattern
 - **Sequential path:** read `references/content-philosophy.md` and `references/gotchas.md`, then write modules one at a time.
 - **Parallel path:** dispatch modules to subagents in batches of up to 3. Each receives its brief, `content-philosophy.md`, `gotchas.md`, and only the listed sections of `interactive-elements.md`. Afterwards, check consistency in the main context (terminology, tone, transitions, accent usage).
 
-**Step 4 — Assemble.** `cd course-name && bash build.sh` → produces `index.html`.
+**Step 4 — Assemble.** `cd course-name && bash build.sh` → produces `index.html`. Where Bash isn't available (native Windows), run `powershell -NoProfile -ExecutionPolicy Bypass -File course-name\build.ps1` instead — it produces the identical file.
 
 **Critical rules**
 - Never regenerate `styles.css` or `main.js`; never add `<style>`/`<script>` in modules.
@@ -141,7 +142,7 @@ Write `modules/00-cover.html` with a `.course-hero` (see the Course Hero pattern
 
 ## Phase 4: Review and Open
 
-Run `build.sh`, then check the result:
+Run `build.sh` (or `build.ps1`), then check the result:
 - If Playwright/Chromium is available, open `index.html`, check the browser console for errors, and screenshot a few modules in light and dark mode to catch layout problems.
 - Walk through `references/gotchas.md`.
 - Tell the user: which mode you chose and why, where the course is, what screenshots are real vs illustrations (and how to replace illustrations), and invite feedback.

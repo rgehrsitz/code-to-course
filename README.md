@@ -36,7 +36,7 @@ Claude picks the mode from the project (or you can name it), analyzes the code, 
 
 ### Requirements
 
-- **Claude Code** — nothing else is needed to generate and view courses.
+- **Claude Code** plus **Bash** or **PowerShell** — to assemble the course (`build.sh`, or `build.ps1` on native Windows; Claude picks whichever is available). Viewing a finished course needs only a browser.
 - **Node 18+ and Playwright** — only for automatic screenshots of your app (`npm i -D playwright` in the app repo). Without them, the course uses clearly labeled illustrations instead.
 - Courses load fonts from Google Fonts. Offline they fall back to system fonts and everything else still works.
 
@@ -82,7 +82,7 @@ Real screenshots make end-user courses much better. Claude tries, in order:
    - **Tauri / web UIs** — the frontend dev server, with native bridges stubbed.
 3. **Illustrations** — clearly labeled HTML mock-ups, when the app can't run.
 
-The capture script also computes hotspot positions from real element positions, so tour markers land exactly on the controls they describe. To replace illustrations later, drop PNGs into the course's `screenshots/` folder and run `bash build.sh` in the course folder. Full guide: [`references/screenshots.md`](references/screenshots.md).
+The capture script also computes hotspot positions from real element positions, so tour markers land exactly on the controls they describe. To update a screenshot later, overwrite the PNG with the same name in the course's `screenshots/` folder; no rebuild is needed. To turn an illustration into a real screenshot, give Claude the image and ask it to swap it in (it edits that module and rebuilds). Full guide: [`references/screenshots.md`](references/screenshots.md).
 
 You can also run the capture script yourself — describe the shots in a JSON file, then:
 
@@ -122,7 +122,7 @@ references/
 ├── gotchas.md                   # Review checklist
 ├── module-brief-template.md     # Briefs for parallel module writing
 ├── styles.css · main.js         # Pre-built design system + engines (copied verbatim)
-└── _base.html · _footer.html · build.sh
+└── _base.html · _footer.html · build.sh · build.ps1
 examples/component-gallery/      # Sample course showing every element (bash preview.sh to rebuild)
 docs/                            # README preview images
 ```
