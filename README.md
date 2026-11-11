@@ -112,6 +112,8 @@ node ~/.claude/skills/code-to-course/references/capture.cjs shots.json
 node ~/.agents/skills/code-to-course/references/capture.cjs shots.json
 ```
 
+If you installed the skill somewhere else, such as `~/.codex/skills/` or a project's `.agents/skills/` folder, use that folder's path instead.
+
 It writes the PNGs plus `hotspots.json` (ready-to-paste hotspot markup), and exits non-zero if any shot or hotspot failed. The file format is documented at the top of `capture.cjs`.
 
 ## Design philosophy
