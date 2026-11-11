@@ -105,7 +105,7 @@ The capture script also computes hotspot positions from real element positions, 
 You can also run the capture script yourself — describe the shots in a JSON file, then:
 
 ```bash
-node <skill-folder>/references/capture.cjs shots.json   # e.g. ~/.agents/skills/code-to-course
+node ~/.agents/skills/code-to-course/references/capture.cjs shots.json   # use the folder you cloned into, e.g. ~/.claude/skills/code-to-course
 ```
 
 It writes the PNGs plus `hotspots.json` (ready-to-paste hotspot markup), and exits non-zero if any shot or hotspot failed. The file format is documented at the top of `capture.cjs`.
